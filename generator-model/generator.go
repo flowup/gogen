@@ -42,12 +42,6 @@ func (g *generator) Generate() error {
 		return err
 	}
 
-	// compile package template
-	packTmpl, err := template.New("package").Parse(packageTemplate)
-	if err != nil {
-		return err
-	}
-
 	// compile model template
 	tmpl, err := template.New("model").Parse(modelTemplate)
 	if err != nil {
@@ -58,8 +52,13 @@ func (g *generator) Generate() error {
 		if model, ok := resource.(*Schema); ok {
 			genlog.Info("Generating model for %s", model.Name)
 			content := bytes.Buffer{}
-			packTmpl.Execute(&content, g)
-			tmpl.Execute(&content, model)
+			tmpl.Execute(&content, struct {
+				Model       *Schema
+				PackageName string
+			}{
+				Model:       model,
+				PackageName: g.PackageName(),
+			})
 			g.SaveFile(model.Name, content)
 
 			// set other meta to model
@@ -72,12 +71,12 @@ func (g *generator) Generate() error {
 
 // Templates
 var (
-	packageTemplate = `package {{.PackageName}}`
-
 	modelTemplate = `
-		// {{.Name}} is model representing the entity
-		type {{.Name}} struct {
-		  {{range .Fields}}{{.Name}} {{.Type.Name}}
+		package {{.PackageName}}
+
+		// {{.Model.Name}} is model representing the entity
+		type {{.Model.Name}} struct {
+		  {{range .Fields}}{{.Model.Name}} {{.Type.Name}}
 		  {{end}}
 		}`
 )
