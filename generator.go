@@ -8,9 +8,9 @@ import (
 	"strings"
 )
 
-// Generator interface provides interface definition
+// Generable interface provides interface definition
 // for any generator that can be used within gogen
-type Generator interface {
+type Generable interface {
 	// Initialize is called just before generate to
 	// pass the generator resources that should be used
 	Initialize(resources *ResourceContainer)
@@ -30,14 +30,14 @@ type Generator interface {
 	SetOutputDir(dir string)
 }
 
-// GeneratorContext is base class that should be used
+// Generator is base class that should be used
 // as a composite to any other created generator context.
 // It supports basic data flow and provides helpers.
 //
 // This type should encapsulate all widely used methods
 // that are needed by the generators, thus may be extended
 // by the time.
-type GeneratorContext struct {
+type Generator struct {
 	// directory to which should all outputs go
 	OutputDir string
 	// Resources stores all Resources that were passed
@@ -47,27 +47,27 @@ type GeneratorContext struct {
 
 // Initialize accepts resources that should be used by
 // the current generator context
-func (g *GeneratorContext) Initialize(resources *ResourceContainer) {
+func (g *Generator) Initialize(resources *ResourceContainer) {
 	g.Resources = resources
 }
 
 // SetOutputDir will set the output dir of the generator
 // to the specified value, which should result in code
 // generated to the destination
-func (g *GeneratorContext) SetOutputDir(dir string) {
+func (g *Generator) SetOutputDir(dir string) {
 	g.OutputDir = dir
 }
 
 // Name is virtual method that should return the
 // name of the generator. This is used for the debugging
 // purpose
-func (g *GeneratorContext) Name() string {
+func (g *Generator) Name() string {
 	return "Generator"
 }
 
 // PackageName returns the name of the package based on the
 // last directory from the OutputDir
-func (g *GeneratorContext) PackageName() string {
+func (g *Generator) PackageName() string {
 	// get package chain from the output dir
 	packChain := strings.Split(g.OutputDir, "/")
 
@@ -84,7 +84,7 @@ func (g *GeneratorContext) PackageName() string {
 
 // Prepare will ensure, that output directory exists
 // and all needed values are correctly set
-func (g *GeneratorContext) Prepare() error {
+func (g *Generator) Prepare() error {
 	var err error
 
 	// if no output dir was
@@ -104,7 +104,7 @@ func (g *GeneratorContext) Prepare() error {
 // SaveFile will save provided content into the
 // specified file with extension .gen.go and output
 // directory previously set
-func (g *GeneratorContext) SaveFile(name string, content bytes.Buffer) error {
+func (g *Generator) SaveFile(name string, content bytes.Buffer) error {
 	// calculate path to the file
 	filePath := path.Join(g.OutputDir, name+".gen.go")
 	// save file

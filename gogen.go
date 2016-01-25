@@ -47,7 +47,7 @@ func Define(resource interface{}) {
 
 // Pipe will register new pipe that will be run
 // in parallel
-func Pipe(gens ...Generator) {
+func Pipe(gens ...Generable) {
 	pipe := Pipeline{}
 	for _, gen := range gens {
 		pipe.Add(gen)

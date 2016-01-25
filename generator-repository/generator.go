@@ -27,7 +27,7 @@ const (
 // generator encapsulates the logic behind
 // generating of models
 type generator struct {
-	gogen.GeneratorContext
+	gogen.Generator
 
 	repositoryType int
 }
