@@ -106,7 +106,7 @@ func (g *Generator) Prepare() error {
 // directory previously set
 func (g *Generator) SaveFile(name string, content bytes.Buffer) error {
 	// calculate path to the file
-	filePath := path.Join(g.OutputDir, name+".gen.go")
+	filePath := path.Join(g.OutputDir, name+".go")
 	// save file
 	return ioutil.WriteFile(filePath, content.Bytes(), os.ModePerm)
 }
