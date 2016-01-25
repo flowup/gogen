@@ -1,8 +1,8 @@
 ## Gogen
 
-[![Build Status](https://travis-ci.org/gophergala2016/gogen.svg?branch=master)](https://travis-ci.org/gophergala2016/gogen) [![Godoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/gophergala2016/gogen)
+[![Build Status](https://travis-ci.org/gophergala2016/gogen.svg?branch=master)](https://travis-ci.org/flowup/gogen) [![Godoc](http://img.shields.io/badge/go-documentation-blue.svg?style=flat-square)](https://godoc.org/github.com/flowup/gogen)
 
-> Warning: This project is in rapid development
+> Warning: This project is in the development
 
 Gogen is lightweight [**resourceful code generator library**](https://github.com/gophergala2016/gogen/wiki) written entirely in Go. It is based on resource definitions, pipes and executable configuration files.
 
@@ -52,3 +52,4 @@ This [**configuration file**](https://github.com/gophergala2016/gogen/wiki/Confi
 
 - [Swagger](http://swagger.io/)
 - [Goa](http://goa.design/goagen.html)
+- [Protocol Buffers](https://developers.google.com/protocol-buffers/)
