@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/gophergala2016/gogen"
-	"github.com/gophergala2016/gogen/generator-model"
-	"github.com/gophergala2016/gogen/generator-repository"
-	"github.com/gophergala2016/gogen/resource"
+	"github.com/flowup/gogen"
+	"github.com/flowup/gogen/generator-model"
+	"github.com/flowup/gogen/generator-repository"
+	"github.com/flowup/gogen/resource"
 )
 
 func main() {

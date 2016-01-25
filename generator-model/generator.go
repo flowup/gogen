@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"text/template"
 
-	"github.com/gophergala2016/gogen"
+	"github.com/flowup/gogen"
 	"github.com/op/go-logging"
 )
 
