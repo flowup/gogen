@@ -56,8 +56,11 @@ func Pipe(gens ...Generator) {
 	Pipes = append(Pipes, pipe)
 }
 
-// Generate will startup a
-func Generate() error {
+// Generate will startup the generating process
+// Note: this function will panic instead of returning
+// 		error. This behavior is intended so it easier for
+//		users to write configs
+func Generate() {
 	genlog.Info("Starting gogen")
 
 	wg := sync.WaitGroup{}
@@ -82,6 +85,4 @@ func Generate() error {
 	}
 
 	wg.Wait()
-
-	return nil
 }

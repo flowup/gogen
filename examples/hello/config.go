@@ -20,7 +20,5 @@ func main() {
 	)
 
 	// start the generator
-	if err := gogen.Generate(); err != nil {
-		panic(err)
-	}
+	gogen.Generate()
 }
