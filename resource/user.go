@@ -1,9 +1,9 @@
 package resource
 
-import "github.com/gophergala2016/gogen/generator-model"
+import "github.com/flowup/gogen/generator-model"
 
 // User is entity definition for the user
-var User = &model.Model{
+var User = &model.Schema{
 	Name: "User",
 	Fields: []model.Field{
 		{

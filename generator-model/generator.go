@@ -55,7 +55,7 @@ func (g *generator) Generate() error {
 	}
 
 	for _, resource := range *g.Resources {
-		if model, ok := resource.(*Model); ok {
+		if model, ok := resource.(*Schema); ok {
 			genlog.Info("Generating model for %s", model.Name)
 			content := bytes.Buffer{}
 			packTmpl.Execute(&content, g)

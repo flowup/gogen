@@ -7,13 +7,13 @@ var (
 	ErrFieldNotFound = errors.New("Specified field could not be found")
 )
 
-// Model defines entity that can be used to
+// Schema defines entity that can be used to
 // populate information needed by the generators.
 //
 // This includes fields, enums and helper methods.
 // It may also restrict usage of these fields based on
 // storage or access technology used
-type Model struct {
+type Schema struct {
 	// Name of the model by which it should be distinguished
 	Name string
 	// Fields is array of the fields that should the
@@ -30,7 +30,7 @@ type Model struct {
 
 // AddField extends fields definition by the provided fields.
 // Returns self.
-func (m *Model) AddField(field Field, fields ...Field) *Model {
+func (m *Schema) AddField(field Field, fields ...Field) *Schema {
 	m.Fields = append(m.Fields, field)
 	m.Fields = append(m.Fields, fields...)
 	return m
@@ -38,7 +38,7 @@ func (m *Model) AddField(field Field, fields ...Field) *Model {
 
 // AddRestriction extends restrictions list by the provided
 // restrictions. Returns self.
-func (m *Model) AddRestriction(r Restriction, rs ...Restriction) *Model {
+func (m *Schema) AddRestriction(r Restriction, rs ...Restriction) *Schema {
 	m.Restrictions = append(m.Restrictions, r)
 	m.Restrictions = append(m.Restrictions, rs...)
 	return m
@@ -47,7 +47,7 @@ func (m *Model) AddRestriction(r Restriction, rs ...Restriction) *Model {
 // GetField will search the model for the field with
 // the given name. If no field was found, function
 // will rise an error.
-func (m *Model) GetField(name string) (Field, error) {
+func (m *Schema) GetField(name string) (Field, error) {
 	for _, f := range m.Fields {
 		if f.Name == name {
 			return f, nil
@@ -66,7 +66,7 @@ func (m *Model) GetField(name string) (Field, error) {
 // Warning: this method will not extend the current model,
 // but create new model and returns it. To extend current model,
 // use Add methods
-func (m *Model) Extend(by *Model) *Model {
+func (m *Schema) Extend(by *Schema) *Schema {
 	// copy fields
 	for _, f := range m.Fields {
 		by.AddField(f)
@@ -80,7 +80,7 @@ func (m *Model) Extend(by *Model) *Model {
 }
 
 // ImportName returns name of the model with the import
-func (m *Model) ImportName() string {
+func (m *Schema) ImportName() string {
 	return m.Package + "." + m.Name
 }
 
@@ -150,8 +150,8 @@ type (
 	// Link encapsulates relationship made by the
 	// field to the model
 	Link struct {
-		// Model we are linking to
-		Model *Model
+		// Schema we are linking to
+		Schema *Schema
 		// Relationship to the model
 		Relation Relation
 	}
