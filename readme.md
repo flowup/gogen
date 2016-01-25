@@ -25,24 +25,22 @@ func main() {
   // Define adds resources for the generators, this way
   // we are adding the user model that is already defined
   // for us to the generator resources
-  gogen.Define(model.User)
+  gogen.Define(resource.User)
 
   // set output for the generator that is generating models
-  generator.Model.SetOutputDir("./model")
+  model.Generator.SetOutputDir("./model")
 
   // Pipe is set of generators. More pipes can go in parallel
   // and everything in pipe is executed in serie. This allows
   // generators to have dependencies on each other
   //
   // This is creating our pipe with the ModelGenerator in it
-  gogen.Pipe(
-  	generator.Model,
-  )
+	gogen.Pipe(
+		model.Generator,
+	)
 
   // start the generator
-  if err := gogen.Generate(); err != nil {
-  	panic(err)
-  }
+  gogen.Generate()
 }
 ```
 
