@@ -65,12 +65,12 @@ func (g *generator) Generate() error {
 	}
 
 	for _, resource := range *g.Resources {
-		if entity, ok := resource.(*model.Model); ok {
+		if entity, ok := resource.(*model.Schema); ok {
 			genlog.Info("Generating repository for model %s", entity.Name)
 			content := bytes.Buffer{}
 			err = repoTmpl.Execute(&content,
 				struct {
-					Model       *model.Model
+					Model       *model.Schema
 					PackageName string
 				}{
 					Model:       entity,
