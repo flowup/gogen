@@ -42,7 +42,14 @@ func init() {
 // Define will store the defined model for the use in
 // the generators.
 func Define(resource interface{}) {
-	Resources = append(Resources, resource)
+	switch val := resource.(type) {
+	case RemoteResource:
+		// append all fetched resources from the remote
+		Resources = append(Resources, val.Get()...)
+	default:
+		// not known resource, append
+		Resources = append(Resources, resource)
+	}
 }
 
 // Pipe will register new pipe that will be run
