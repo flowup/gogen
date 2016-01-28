@@ -46,5 +46,5 @@ func (s *ResourceSuite) TestSearch() {
 }
 
 func TestResourceSuite(t *testing.T) {
-}
 	suite.Run(t, &ResourceSuite{})
+}
