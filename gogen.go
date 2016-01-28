@@ -8,13 +8,6 @@ import (
 )
 
 var (
-	// Models is public static set of models exposed
-	// by the Gogen, so generators can use it. This
-	// set contains every model that was added either
-	// manually or by Define function
-	// @Deprecated
-	//Models []*Model
-
 	// Resources is set resources that were firstly defined
 	Resources ResourceContainer
 

@@ -1,8 +1,17 @@
 package gogen
 
+import "reflect"
+
 // RemoteResource is resource that can be fetched from
 // the remote source, e.g. github gist
 type RemoteResource interface {
+	Get() []interface{}
+}
+
+// Resource encapsulates any type that can be type casted
+// to the correct type. This interface must allow the
+// resource to be correctly get.
+type Resource interface {
 	Get() []interface{}
 }
 
@@ -15,4 +24,18 @@ type ResourceContainer []interface{}
 // container.
 func (rc *ResourceContainer) Add(v interface{}) {
 	(*rc) = append((*rc), v)
+}
+
+// Search performs type search above the resource container.
+// This allows simple use of container's interface.
+func (rc *ResourceContainer) Search(v interface{}) []interface{} {
+	var result = []interface{}{}
+
+	for _, res := range *rc {
+		if reflect.TypeOf(res) == reflect.TypeOf(v) {
+			result = append(result, res)
+		}
+	}
+
+	return result
 }
