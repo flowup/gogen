@@ -114,6 +114,16 @@ func (g *Generator) PackageName() string {
 	return packChain[len(packChain)-1]
 }
 
+// ImportPath returns import path to the current output dir.
+func (g *Generator) ImportPath() string {
+	cwd, _ := os.Getwd()
+	outPath := path.Join(cwd, g.OutputDir)
+	gopath := path.Join(os.Getenv("GOPATH"), "src")
+
+	// remove gopath from the output directory
+	return strings.TrimLeft(strings.TrimPrefix(outPath, gopath), "/")
+}
+
 // Prepare will ensure, that output directory exists
 // and all needed values are correctly set
 func (g *Generator) Prepare() error {
