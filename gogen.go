@@ -73,11 +73,16 @@ func Generate() {
 				gen.Initialize(&Resources)
 
 				err := gen.Generate()
-				genlog.Info("End of generator %s in pipe %d", gen.Name(), pipeindex)
-				// TODO: make this not panic, but return the error
 				if err != nil {
 					panic(err)
 				}
+
+				err = gen.Output()
+				if err != nil {
+					panic(err)
+				}
+
+				genlog.Info("End of generator %s in pipe %d", gen.Name(), pipeindex)
 			}
 
 			wg.Done()
