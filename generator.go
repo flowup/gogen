@@ -3,6 +3,7 @@ package gogen
 import (
 	"bytes"
 	"errors"
+	"go/format"
 	"io/ioutil"
 	"os"
 	"path"
@@ -14,6 +15,9 @@ var (
 	// ErrTemplateAlreadyExists error is returned every time
 	// duplicate template is found when saving template
 	ErrTemplateAlreadyExists = errors.New("Template could not be saved due to duplicate name")
+	// ErrExtensionMissmatch is returned, when the execution
+	// of template is issued on the template with different ext.
+	ErrExtensionMissmatch = errors.New("Mixing templates with different extensions is invalid")
 )
 
 // Generable interface provides interface definition
@@ -56,6 +60,13 @@ type SavePlate struct {
 	Content   *bytes.Buffer
 	OutputDir string
 	FileName  string
+	Extension string
+}
+
+// FullFileName returns full name of the file which should
+// be used to save the SavePlate
+func (s *SavePlate) FullFileName() string {
+	return s.FileName + s.Extension
 }
 
 // Generator is base class that should be used
@@ -144,9 +155,12 @@ func (g *Generator) ExecuteTemplate(name, content string, schema interface{}) er
 func (g *Generator) ExecuteTemplateExt(name, content string, schema interface{}, ext string) error {
 	if _, ok := g.Templates[name]; !ok {
 		g.Templates[name] = SavePlate{
-			Content:  new(bytes.Buffer),
-			FileName: name + ext,
+			Content:   new(bytes.Buffer),
+			FileName:  name,
+			Extension: ext,
 		}
+	} else if g.Templates[name].Extension != ext {
+		return ErrExtensionMissmatch
 	}
 
 	tmpl, err := template.New(name).Parse(content)
@@ -159,7 +173,7 @@ func (g *Generator) ExecuteTemplateExt(name, content string, schema interface{},
 		return err
 	}
 
-	return nil
+	return err
 }
 
 // SaveFile will save provided content into the
@@ -167,7 +181,7 @@ func (g *Generator) ExecuteTemplateExt(name, content string, schema interface{},
 // directory previously set
 func (g *Generator) SaveFile(name string, content bytes.Buffer) error {
 	// calculate path to the file
-	filePath := path.Join(g.OutputDir, name+".go")
+	filePath := path.Join(g.OutputDir, name)
 	// save file
 	return ioutil.WriteFile(filePath, content.Bytes(), os.ModePerm)
 }
@@ -178,8 +192,22 @@ func (g *Generator) SaveFile(name string, content bytes.Buffer) error {
 // on templates that will be generated
 func (g *Generator) Output() error {
 	for name, plate := range g.Templates {
-		genlog.Info("Generating template [%s], file [%s]", name, plate.FileName)
-		err := g.SaveFile(path.Join(plate.OutputDir, plate.FileName), *plate.Content)
+		genlog.Info("Generating template [%s], file [%s]", name, plate.FullFileName())
+
+		// run import, format. etc. on the generated code
+		switch plate.Extension {
+		case ".go":
+			// get the formatted source
+			formattedSrc, err := format.Source(plate.Content.Bytes())
+			if err != nil {
+				return err
+			}
+			// replace it
+			plate.Content = bytes.NewBuffer(formattedSrc)
+		}
+
+		// save the file
+		err := g.SaveFile(path.Join(plate.OutputDir, plate.FullFileName()), *plate.Content)
 		if err != nil {
 			return err
 		}

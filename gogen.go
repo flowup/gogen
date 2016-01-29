@@ -19,7 +19,7 @@ var (
 var (
 	genlog = logging.MustGetLogger("gogen")
 
-	format = logging.MustStringFormatter(
+	logFormat = logging.MustStringFormatter(
 		`%{color}%{time:15:04:05.000} ▶ %{level:.4s} %{id:03x}%{color:reset} %{message}`,
 	)
 )
@@ -27,7 +27,7 @@ var (
 // initialize logging
 func init() {
 	backend := logging.NewLogBackend(os.Stdout, "", 0)
-	formatter := logging.NewBackendFormatter(backend, format)
+	formatter := logging.NewBackendFormatter(backend, logFormat)
 
 	logging.SetBackend(formatter)
 }
