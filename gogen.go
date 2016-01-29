@@ -70,7 +70,7 @@ func Generate() {
 		go func(pipe Pipeline, pipeindex int) {
 			for _, gen := range pipe.generators {
 				genlog.Info("Starting generator %s in pipe %d", gen.Name(), pipeindex)
-				gen.Initialize(&Resources)
+				gen.Initialize(&Resources, genlog)
 
 				err := gen.Generate()
 				if err != nil {

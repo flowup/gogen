@@ -9,6 +9,8 @@ import (
 	"path"
 	"strings"
 	"text/template"
+
+	"github.com/op/go-logging"
 )
 
 var (
@@ -25,7 +27,7 @@ var (
 type Generable interface {
 	// Initialize is called just before generate to
 	// pass the generator resources that should be used
-	Initialize(resources *ResourceContainer)
+	Initialize(resources *ResourceContainer, log *logging.Logger)
 	// Generate is entry point to the generator. This
 	// method is called only once, when the generator
 	// is invoked
@@ -85,11 +87,13 @@ type Generator struct {
 	// Templates is map of maps of templates, where first
 	// key of the map is name of the template
 	Templates map[string]SavePlate
+	// log attached to the generator
+	log *logging.Logger
 }
 
 // Initialize accepts resources that should be used by
 // the current generator context
-func (g *Generator) Initialize(resources *ResourceContainer) {
+func (g *Generator) Initialize(resources *ResourceContainer, log *logging.Logger) {
 	g.Resources = resources
 	g.Templates = make(map[string]SavePlate)
 	// validate the output dir
