@@ -87,7 +87,7 @@ func (g *Generator) Initialize(resources *ResourceContainer) {
 // to the specified value, which should result in code
 // generated to the destination
 func (g *Generator) SetOutputDir(dir string) {
-	g.OutputDir = dir
+	g.OutputDir = path.Clean(dir)
 }
 
 // Name is virtual method that should return the
@@ -103,7 +103,7 @@ func (g *Generator) PackageName() string {
 	// get package chain from the output dir
 	packChain := strings.Split(g.OutputDir, "/")
 
-	if len(packChain) == 0 || packChain[len(packChain)-1] == "." {
+	if len(g.OutputDir) == 0 || len(packChain) == 0 || packChain[len(packChain)-1] == "." {
 		// return current working dir
 		wd, _ := os.Getwd()
 		pack := strings.Split(wd, "/")
