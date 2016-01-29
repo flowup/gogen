@@ -1,9 +1,6 @@
 package repository
 
 import (
-	"bytes"
-	"text/template"
-
 	"github.com/flowup/gogen"
 	"github.com/flowup/gogen/generator-model"
 	"github.com/flowup/gogen/generator-repository/tmpl"
@@ -58,29 +55,21 @@ func (g *generator) Generate() error {
 		templ = repositorytmpl.MongoRepositoryTemplate
 	}
 
-	// compile mongo repository
-	repoTmpl, err := template.New("repository").Parse(templ)
-	if err != nil {
-		return err
-	}
+	// search for schemas in the resources
+	schemas := g.Resources.Search(&model.Schema{})
 
-	for _, resource := range *g.Resources {
-		if entity, ok := resource.(*model.Schema); ok {
-			genlog.Info("Generating repository for model %s", entity.Name)
-			content := bytes.Buffer{}
-			err = repoTmpl.Execute(&content,
-				struct {
-					Model       *model.Schema
-					PackageName string
-				}{
-					Model:       entity,
-					PackageName: g.PackageName(),
-				},
-			)
-			if err != nil {
-				return err
-			}
-			g.SaveFile(entity.Name+"Repository", content)
+	for _, schema := range schemas {
+		entity := schema.(*model.Schema)
+		genlog.Info("Generating repository for model %s", entity.Name)
+		err = g.ExecuteTemplate(entity.Name+"Repository", templ, struct {
+			Model       *model.Schema
+			PackageName string
+		}{
+			Model:       entity,
+			PackageName: g.PackageName(),
+		})
+		if err != nil {
+			return err
 		}
 	}
 
