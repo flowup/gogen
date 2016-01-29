@@ -1,9 +1,6 @@
 package model
 
 import (
-	"bytes"
-	"text/template"
-
 	"github.com/flowup/gogen"
 	"github.com/op/go-logging"
 )
@@ -42,28 +39,23 @@ func (g *generator) Generate() error {
 		return err
 	}
 
-	// compile model template
-	tmpl, err := template.New("model").Parse(modelTemplate)
-	if err != nil {
-		return err
+	schemas := g.Resources.Search(&Schema{})
+	if len(schemas) == 0 {
+		genlog.Warning("No Schemas for the generator ModelGenerator found")
 	}
 
-	for _, resource := range *g.Resources {
-		if model, ok := resource.(*Schema); ok {
-			genlog.Info("Generating model for %s", model.Name)
-			content := bytes.Buffer{}
-			tmpl.Execute(&content, struct {
-				Model       *Schema
-				PackageName string
-			}{
-				Model:       model,
-				PackageName: g.PackageName(),
-			})
-			g.SaveFile(model.Name, content)
+	for _, ischema := range schemas {
+		schema := ischema.(*Schema)
+		// meta data to the schema
+		schema.Package = g.PackageName()
 
-			// set other meta to model
-			model.Package = g.PackageName()
-		}
+		g.ExecuteTemplate(schema.Name+"Model", modelTemplate, struct {
+			Model       *Schema
+			PackageName string
+		}{
+			Model:       schema,
+			PackageName: g.PackageName(),
+		})
 	}
 
 	return nil
@@ -76,7 +68,7 @@ var (
 
 		// {{.Model.Name}} is model representing the entity
 		type {{.Model.Name}} struct {
-		  {{range .Fields}}{{.Model.Name}} {{.Type.Name}}
+		  {{range .Model.Fields}}{{.Name}} {{.Type.Name}}
 		  {{end}}
 		}`
 )
