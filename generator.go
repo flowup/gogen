@@ -127,20 +127,8 @@ func (g *Generator) ImportPath() string {
 // Prepare will ensure, that output directory exists
 // and all needed values are correctly set
 func (g *Generator) Prepare() error {
-	var err error
-
-	// if no output dir was
-	if g.OutputDir == "" {
-		g.SetOutputDir(".")
-	}
-
 	// create directories that are needed
-	err = os.MkdirAll(g.OutputDir, os.ModePerm)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return os.MkdirAll(g.OutputDir, os.ModePerm)
 }
 
 // ExecuteTemplate is same as ExecuteTemplateExt, but
