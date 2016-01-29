@@ -30,6 +30,15 @@ var testGopaths = map[string]string{
 	"abcd/ef":  "github.com/flowup/gogen/abcd/ef",
 }
 
+func (s *GeneratorSuite) TestSavePlateFullFileName() {
+	p := SavePlate{
+		FileName:  "foo",
+		Extension: ".bar",
+	}
+
+	assert.Equal(s.T(), "foo.bar", p.FullFileName())
+}
+
 type testGenerator struct {
 	Generator
 }
@@ -106,7 +115,9 @@ func (s *GeneratorSuite) TestExecuteTemplate() {
 
 	tmpl, ok := g.Templates["testplate"]
 	assert.Equal(s.T(), true, ok)
-	assert.Equal(s.T(), "testplate.go", tmpl.FileName)
+	assert.Equal(s.T(), "testplate", tmpl.FileName)
+	// ExecuteTemplate should by default give .go extension
+	assert.Equal(s.T(), ".go", tmpl.Extension)
 	assert.Equal(s.T(), "", tmpl.OutputDir)
 }
 
