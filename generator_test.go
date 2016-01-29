@@ -1,6 +1,7 @@
 package gogen
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -81,6 +82,32 @@ func (s *GeneratorSuite) TestImportPath() {
 
 		assert.Equal(s.T(), relativeToGopath, generator.ImportPath())
 	}
+}
+
+func (s *GeneratorSuite) TestPrepare() {
+	// test generated directory
+	g := testGenerator{}
+	g.SetOutputDir("_test/preparetest")
+	err := g.Prepare()
+	assert.Equal(s.T(), nil, err)
+	// clear
+	os.RemoveAll("_test/")
+
+	// should not create anything
+	g.SetOutputDir("")
+	err = g.Prepare()
+	assert.Equal(s.T(), nil, err)
+}
+
+func (s *GeneratorSuite) TestExecuteTemplate() {
+	g := testGenerator{}
+	g.Initialize(nil)
+	g.ExecuteTemplate("testplate", "Something", struct{}{})
+
+	tmpl, ok := g.Templates["testplate"]
+	assert.Equal(s.T(), true, ok)
+	assert.Equal(s.T(), "testplate.go", tmpl.FileName)
+	assert.Equal(s.T(), "", tmpl.OutputDir)
 }
 
 func TestGogenSuite(t *testing.T) {

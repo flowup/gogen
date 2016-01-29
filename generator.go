@@ -81,6 +81,8 @@ type Generator struct {
 func (g *Generator) Initialize(resources *ResourceContainer) {
 	g.Resources = resources
 	g.Templates = make(map[string]SavePlate)
+	// validate the output dir
+	g.SetOutputDir(g.OutputDir)
 }
 
 // SetOutputDir will set the output dir of the generator
