@@ -54,7 +54,7 @@ func (s *GeneratorSuite) TestInitialize() {
 	rc.Add("hello")
 	// prepare test generator
 	g := testGenerator{}
-	g.Initialize(rc)
+	g.Initialize(rc, nil)
 
 	assert.Equal(s.T(), 2, len(*g.Resources))
 }
@@ -110,7 +110,7 @@ func (s *GeneratorSuite) TestPrepare() {
 
 func (s *GeneratorSuite) TestExecuteTemplate() {
 	g := testGenerator{}
-	g.Initialize(nil)
+	g.Initialize(nil, nil)
 	g.ExecuteTemplate("testplate", "Something", struct{}{})
 
 	tmpl, ok := g.Templates["testplate"]
