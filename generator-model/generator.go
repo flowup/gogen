@@ -1,15 +1,10 @@
 package model
 
-import (
-	"github.com/flowup/gogen"
-	"github.com/op/go-logging"
-)
+import "github.com/flowup/gogen"
 
 var (
 	// Generator is global registration of the generator
 	Generator = &generator{}
-
-	genlog = logging.MustGetLogger("gogen")
 )
 
 // Types of models
@@ -41,7 +36,7 @@ func (g *generator) Generate() error {
 
 	schemas := g.Resources.Search(&Schema{})
 	if len(schemas) == 0 {
-		genlog.Warning("No Schemas for the generator ModelGenerator found")
+		g.Log.Warning("No Schemas for the generator ModelGenerator found")
 	}
 
 	for _, ischema := range schemas {

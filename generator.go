@@ -87,8 +87,8 @@ type Generator struct {
 	// Templates is map of maps of templates, where first
 	// key of the map is name of the template
 	Templates map[string]SavePlate
-	// log attached to the generator
-	log *logging.Logger
+	// Log attached to the generator
+	Log *logging.Logger
 }
 
 // Initialize accepts resources that should be used by

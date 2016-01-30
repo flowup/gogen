@@ -4,14 +4,11 @@ import (
 	"github.com/flowup/gogen"
 	"github.com/flowup/gogen/generator-model"
 	"github.com/flowup/gogen/generator-repository/tmpl"
-	"github.com/op/go-logging"
 )
 
 var (
 	// Generator is global registration of the generator
 	Generator = &generator{}
-
-	genlog = logging.MustGetLogger("gogen")
 )
 
 // Repository types that can be used
@@ -60,7 +57,7 @@ func (g *generator) Generate() error {
 
 	for _, schema := range schemas {
 		entity := schema.(*model.Schema)
-		genlog.Info("Generating repository for model %s", entity.Name)
+		g.Log.Info("Generating repository for model %s", entity.Name)
 		err = g.ExecuteTemplate(entity.Name+"Repository", templ, struct {
 			Model       *model.Schema
 			PackageName string
