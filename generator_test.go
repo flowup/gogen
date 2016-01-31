@@ -47,6 +47,10 @@ func (g *testGenerator) Name() string {
 	return "TestGenerator"
 }
 
+func (g *testGenerator) Generate() error {
+	return nil
+}
+
 func (s *GeneratorSuite) TestInitialize() {
 	// prepare resource container
 	rc := &ResourceContainer{}

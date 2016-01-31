@@ -10,3 +10,9 @@ type Pipeline struct {
 func (p *Pipeline) Add(gen Generable) {
 	p.generators = append(p.generators, gen)
 }
+
+// Size returns the number of generators that are
+// in the pipelne
+func (p *Pipeline) Size() int {
+	return len(p.generators)
+}
