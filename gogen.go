@@ -8,12 +8,12 @@ import (
 )
 
 var (
-	// Resources is set resources that were firstly defined
-	Resources ResourceContainer
+	// resources is set resources that were firstly defined
+	resources ResourceContainer
 
-	// Pipes is set of pipelines that should be run when
+	// pipes is set of pipelines that should be run when
 	// generate is called
-	Pipes []Pipeline
+	pipes []Pipeline
 )
 
 var (
@@ -38,10 +38,10 @@ func Define(resource interface{}) {
 	switch val := resource.(type) {
 	case RemoteResource:
 		// append all fetched resources from the remote
-		Resources = append(Resources, val.Get()...)
+		resources = append(resources, val.Get()...)
 	default:
 		// not known resource, append
-		Resources = append(Resources, resource)
+		resources = append(resources, resource)
 	}
 }
 
@@ -53,7 +53,7 @@ func Pipe(gens ...Generable) {
 		pipe.Add(gen)
 	}
 
-	Pipes = append(Pipes, pipe)
+	pipes = append(pipes, pipe)
 }
 
 // Generate will startup the generating process
@@ -65,12 +65,12 @@ func Generate() {
 
 	wg := sync.WaitGroup{}
 
-	for pipeindex, pipe := range Pipes {
+	for pipeindex, pipe := range pipes {
 		wg.Add(1)
 		go func(pipe Pipeline, pipeindex int) {
 			for _, gen := range pipe.generators {
 				genlog.Info("Starting generator %s in pipe %d", gen.Name(), pipeindex)
-				gen.Initialize(&Resources, genlog)
+				gen.Initialize(&resources, genlog)
 
 				err := gen.Generate()
 				if err != nil {
