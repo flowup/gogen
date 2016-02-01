@@ -22,9 +22,9 @@ type Importer interface {
 	Import(imps []Importable) error
 }
 
-// GetSourceFromUrl returns source from the given page in
+// GetSourceFromURL returns source from the given page in
 // string data.
-func GetSourceFromUrl(url string) (string, error) {
+func GetSourceFromURL(url string) (string, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", err
