@@ -1,4 +1,4 @@
-package gogen
+package unk
 
 import "regexp"
 
@@ -6,6 +6,7 @@ import "regexp"
 const (
 	NameFitler = iota
 	ContentFilter
+	URLFilter
 )
 
 // Filter holds data about resource filtering of gogen.

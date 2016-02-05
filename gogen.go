@@ -1,9 +1,11 @@
 package gogen
 
 import (
+	"fmt"
 	"os"
 	"sync"
 
+	"github.com/alecthomas/kingpin"
 	"github.com/op/go-logging"
 )
 
@@ -14,6 +16,11 @@ var (
 	// pipes is set of pipelines that should be run when
 	// generate is called
 	pipes []Pipeline
+
+	// cmdSources is a set of sources that was passed by the
+	// command line. All these sources will be recognized by
+	// the importers
+	cmdSources = kingpin.Flag("source", "List of importable sources").Short('s').Strings()
 )
 
 var (
@@ -63,8 +70,16 @@ func Pipe(gens ...Generable) {
 func Generate() {
 	genlog.Info("Starting gogen")
 
-	wg := sync.WaitGroup{}
+	// parse arguments from the command line
+	kingpin.Parse()
 
+	// define unknown resources
+	for _, resource := range *cmdSources {
+		fmt.Println(resource, "passed by command line")
+	}
+
+	// go through each pipe
+	wg := sync.WaitGroup{}
 	for pipeindex, pipe := range pipes {
 		wg.Add(1)
 		go func(pipe Pipeline, pipeindex int) {

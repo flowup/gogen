@@ -1,12 +1,7 @@
-package gogen
-
-import (
-	"io/ioutil"
-	"net/http"
-)
+package unk
 
 // Importable is a resource that should be imported. This
-// can be anything that has type and link.
+// can be anything that has type and path.
 type Importable interface {
 	// GetSource will return path to source. This can be http
 	// local file or anything else.
@@ -20,17 +15,4 @@ type Importable interface {
 // imported are defined and can be used by the generators
 type Importer interface {
 	Import(imps []Importable) error
-}
-
-// GetSourceFromURL returns source from the given page in
-// string data.
-func GetSourceFromURL(url string) (string, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	return string(body), err
 }
