@@ -8,9 +8,10 @@ import (
 
 // Possible sources that can be recognized
 const (
-	FileSource = iota // local file
-	HTTPSource        // http link
-	GistSource        // gist link
+	None       = iota
+	FileSource // local file
+	HTTPSource // http link
+	GistSource // gist link
 )
 
 // Source stores data about any object that
@@ -45,11 +46,13 @@ func (s *Source) Resolve() error {
 
 	switch s.Type {
 	case FileSource:
-		chain := strings.Split(s.Path, "/")
-		s.Name = chain[len(chain)-1]
-
-	default:
-		panic("Type of the source could not be determined")
+		if strings.Index(s.Path, "/") == -1 {
+			// name is the path itself
+			s.Name = s.Path
+		} else {
+			chain := strings.Split(s.Path, "/")
+			s.Name = chain[len(chain)-1]
+		}
 	}
 	return nil
 }
