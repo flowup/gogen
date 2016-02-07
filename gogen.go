@@ -1,11 +1,11 @@
 package gogen
 
 import (
-	"fmt"
 	"os"
 	"sync"
 
 	"github.com/alecthomas/kingpin"
+	"github.com/flowup/gogen/unk"
 	"github.com/op/go-logging"
 )
 
@@ -16,6 +16,10 @@ var (
 	// pipes is set of pipelines that should be run when
 	// generate is called
 	pipes []Pipeline
+
+	// importers is a collection of available importers in
+	// the current session of generator
+	importers unk.ImporterCollection
 
 	// cmdSources is a set of sources that was passed by the
 	// command line. All these sources will be recognized by
@@ -74,8 +78,14 @@ func Generate() {
 	kingpin.Parse()
 
 	// define unknown resources
-	for _, resource := range *cmdSources {
-		fmt.Println(resource, "passed by command line")
+	for _, srcPath := range *cmdSources {
+		genlog.Info("Resolving resource [%s]", srcPath)
+		// get the source and resolve it
+		src := unk.NewSource(srcPath)
+		err := src.Resolve()
+		if err != nil {
+			panic("Given source could not be resolved")
+		}
 	}
 
 	// go through each pipe
