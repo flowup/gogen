@@ -1,3 +1,5 @@
 .git
-out/
-./test/
+out
+test
+.idea
+*.iml
