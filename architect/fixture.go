@@ -26,6 +26,10 @@ func Function_Test() {
 
 }
 
+func unexported_Test() {
+
+}
+
 func ParametricFunction_Test(a string, b, c int) {
 	math.Pow(1, 2)
 }

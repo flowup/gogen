@@ -46,6 +46,18 @@ func (s *BuildSuite) TestImports() {
 	assert.Equal(s.T(), true, s.build.HasImport("math"))
 }
 
+func (s *BuildSuite) TestFunctions() {
+	assert.Equal(s.T(), 4, len(s.build.functions))
+
+	fn := s.build.GetFunction("Function_Test")
+	assert.NotEqual(s.T(), nil, fn)
+	assert.Equal(s.T(), true, fn.Exported)
+
+	unexpFn := s.build.GetFunction("unexported_Test")
+	assert.NotEqual(s.T(), nil, unexpFn)
+	assert.Equal(s.T(), false, unexpFn.Exported)
+}
+
 func TestBuildSuite(t *testing.T) {
 	suite.Run(t, &BuildSuite{})
 }
