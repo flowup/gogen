@@ -14,7 +14,8 @@ type FileSuite struct {
 func (s *FileSuite) SetupTest() {}
 
 func (s *FileSuite) TestFile() {
-	build := File("./file.go")
+	build, err := File("./file.go")
+	assert.Equal(s.T(), nil, err)
 	assert.Equal(s.T(), "parse", build.Package())
 }
 

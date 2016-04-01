@@ -1,7 +1,6 @@
 package architect
 
 import (
-	"fmt"
 	"go/ast"
 )
 
@@ -25,5 +24,5 @@ func (b *Build) Package() string {
 // Make will start the build from the given
 // ast file
 func (b *Build) Make(ast *ast.File) {
-	fmt.Println(ast.Name.Name)
+	b.pack = ast.Name.Name
 }
