@@ -30,6 +30,10 @@ func (s *BuildSuite) TestPackageName() {
 	assert.Equal(s.T(), "architect", s.build.Package())
 }
 
+func (s *BuildSuite) TestStructDefinitions() {
+	assert.Equal(s.T(), 2, len(s.build.structs))
+}
+
 func TestBuildSuite(t *testing.T) {
 	suite.Run(t, &BuildSuite{})
 }
