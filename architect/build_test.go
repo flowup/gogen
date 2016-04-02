@@ -35,8 +35,8 @@ func (s *BuildSuite) TestStructDefinitions() {
 	assert.Equal(s.T(), 2, len(s.build.structs))
 
 	// check struct properties
-	assert.Equal(s.T(), "X_Test", s.build.structs[0].Name)
-	assert.Equal(s.T(), "Y_Test", s.build.structs[1].Name)
+	assert.Equal(s.T(), "X_Test", s.build.structs[0].name)
+	assert.Equal(s.T(), "Y_Test", s.build.structs[1].name)
 }
 
 func (s *BuildSuite) TestImports() {
@@ -65,8 +65,8 @@ func (s *BuildSuite) TestFindStructAndMethods() {
 	xTest := s.build.FindStruct("X_Test")
 	yTest := s.build.FindStruct("Y_Test")
 
-	assert.NotEqual(s.T(), nil, xTest.FindMethod("X_Test_Method"))
-	assert.Equal(s.T(), nil, yTest.FindMethod("Y_Test_Unexisting_Method"))
+	assert.NotEqual(s.T(), nil, xTest.Method("X_Test_Method"))
+	assert.Equal(s.T(), nil, yTest.Method("Y_Test_Unexisting_Method"))
 }
 
 func (s *BuildSuite) TestStructures() {

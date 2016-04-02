@@ -6,39 +6,6 @@ import (
 	"fmt"
 )
 
-// StructField defines a field that is present
-// within the structure in the build
-type StructField struct {
-	Name string
-}
-
-type Struct interface {
-	FindMethod(name string) Function
-}
-
-// Struct is declaration of any structure type
-// defined within the Build
-type StructImpl struct {
-	Name      string
-	Fields    []*StructField
-	Methods   []Function
-
-	// Back-links to the AST
-	astStruct *ast.StructType
-}
-
-// FindMethod searches for the method by the name in
-// the current structure instance
-func (s *StructImpl) FindMethod(name string) Function {
-	for _, m := range s.Methods {
-		if m.Name() == name {
-			return m
-		}
-	}
-
-	return nil
-}
-
 // Build stores symbols that are available
 // in the given package or file.
 type Build struct {
@@ -93,7 +60,7 @@ func (b *Build) FindFunction(name string) *FunctionImpl {
 // build and returns the first match
 func (b *Build) FindStruct(name string) *StructImpl {
 	for _, st := range b.structs {
-		if st.Name == name {
+		if st.name == name {
 			return st
 		}
 	}
@@ -158,7 +125,7 @@ func (b *Build) parseFunction(f *ast.FuncDecl) {
 		found := false
 		for _, s := range b.structs {
 			if s.astStruct == f.Recv.List[0].Type.(*ast.StarExpr).X.(*ast.Ident).Obj.Decl.(*ast.TypeSpec).Type.(*ast.StructType) {
-				s.Methods = append(s.Methods, fun)
+				s.methods = append(s.methods, fun)
 				found = true
 				break
 			}
@@ -185,18 +152,18 @@ func (b *Build) handleTypeSpec(spec *ast.TypeSpec) {
 
 func (b *Build) parseStructure(name string, st *ast.StructType) {
 	stru := &StructImpl{
-		Name: name,
+		name: name,
 		// back-links
 		astStruct: st,
 	}
 
 	// iterate over fields
 	for _, field := range st.Fields.List {
-		f := &StructField{
-			Name: field.Names[0].Name,
+		f := &FieldImpl{
+			name: field.Names[0].Name,
 		}
 
-		stru.Fields = append(stru.Fields, f)
+		stru.fields = append(stru.fields, f)
 	}
 
 	// add to the list of the structures
