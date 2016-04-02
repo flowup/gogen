@@ -12,7 +12,7 @@ type Field interface {
 // StructField defines a field that is present
 // within the structure in the build
 type FieldImpl struct {
-	name string `json:"name"`
+	name string
 }
 
 // Name returns name of the current Field instance
@@ -28,7 +28,6 @@ type Struct interface {
 	AddMethod(method Function)
 	Method(name string) Function
 	// json marshaler
-	MarshalJSON() ([]byte, error)
 	// AST type getter
 	AST() *ast.StructType
 }
