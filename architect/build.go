@@ -12,27 +12,6 @@ type StructField struct {
 	Name string
 }
 
-type Function interface {
-	Name() string
-	Exported() bool
-}
-
-// Function is an entity that provides basic information
-// about the functions that are stored inside the first
-// layer or struct methods
-type FunctionImpl struct {
-	name     string
-	exported bool
-}
-
-func (f *FunctionImpl) Name() string {
-	return f.name
-}
-
-func (f *FunctionImpl) Exported() bool {
-	return f.exported
-}
-
 type Struct interface {
 	FindMethod(name string) Function
 }
