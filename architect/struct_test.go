@@ -28,9 +28,6 @@ func (s *StructSuite) TestName() {
 func (s *StructSuite) TestField() {
 }
 
-func (s *StructSuite) TestMethod() {
-}
-
 func TestStructTest(t *testing.T) {
 	suite.Run(t, new(StructSuite))
 }

@@ -10,10 +10,11 @@ import (
 // Build stores symbols that are available
 // in the given package or file.
 type Build struct {
-	pack      string     // name of the package
-	imports   []string   // list of import packages
-	structs   []Struct   // list of structures in the build
-	functions []Function // list of functions in the build
+	pack       string      // name of the package
+	imports    []string    // list of import packages
+	structs    []Struct    // list of structures in the build
+	interfaces []Interface // list of interface in the build
+	functions  []Function  // list of functions in the build
 }
 
 // NewBuild will return new Build
@@ -29,9 +30,10 @@ func (b *Build) MarshalJSON() ([]byte, error) {
 		Package   string `json:"package"`
 		Imports   []string `json:"imports"`
 		Structs   []Struct `json:"structs"`
+		Interfaces []Interface `json:"interfaces"`
 		Functions []Function `json:"functions"`
 	}{
-		b.pack, b.imports, b.structs, b.functions,
+		b.pack, b.imports, b.structs, b.interfaces, b.functions,
 	})
 }
 
@@ -188,8 +190,16 @@ func (b *Build) parseStructure(name string, st *ast.StructType) {
 	b.structs = append(b.structs, stru)
 }
 
-func (b *Build) parseInterface(name string, st *ast.InterfaceType) {
+func (b *Build) parseInterface(name string, astInter *ast.InterfaceType) {
+	inter := &InterfaceImpl{
+		name: name,
+		astInterface: astInter,
+	}
 
+	//for _, method := range astInter.Methods.List {
+	//}
+
+	b.interfaces = append(b.interfaces, inter)
 }
 
 func (b *Build) handleImportSpec(spec *ast.ImportSpec) {

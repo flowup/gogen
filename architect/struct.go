@@ -5,12 +5,6 @@ import (
 	"encoding/json"
 )
 
-// Field is any field from the Struct field, to function
-// parameter fields
-type Field interface {
-	Name() string
-}
-
 // FieldImpl defines an implementation of the Field interface
 type FieldImpl struct {
 	name string
@@ -24,12 +18,10 @@ func (f *FieldImpl) Name() string {
 // Struct is a definition for the Struct entities
 // present in the Build
 type Struct interface {
-	Name() string
+	// Struct extends the Interface interface
+	Interface
 	// getters
-	Field(name string) Field
-
-	AddMethod(method Function)
-	Method(name string) Function
+	Var(name string) Variable
 	// json marshaler
 	// AST type getter
 	AST() *ast.StructType
@@ -39,8 +31,11 @@ type Struct interface {
 // interface, which can be used transparently with the
 // architect package
 type StructImpl struct {
+	// StructImpl extends the InterfaceImpl
+	InterfaceImpl
+
 	name      string
-	fields    []Field
+	fields    []Variable
 	methods   []Function
 
 	// Back-links to the AST
@@ -60,29 +55,11 @@ func (s *StructImpl) Name() string {
 	return s.name
 }
 
-// Field searches for the field by the given name
-func (s *StructImpl) Field(name string) Field {
+// Var searches for the variable by the given name
+func (s *StructImpl) Var(name string) Variable {
 	for _, f := range s.fields {
 		if f.Name() == name {
 			return f
-		}
-	}
-
-	return nil
-}
-
-// AddMethod adds given method into the existing set of
-// methods
-func (s *StructImpl) AddMethod(method Function) {
-	s.methods = append(s.methods, method)
-}
-
-// Method searches for the method by the name in
-// the current structure instance
-func (s *StructImpl) Method(name string) Function {
-	for _, m := range s.methods {
-		if m.Name() == name {
-			return m
 		}
 	}
 
@@ -94,7 +71,7 @@ func (s *StructImpl) Method(name string) Function {
 func (s *StructImpl) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Name    string `json:"name"`
-		Fields  []Field `json:"fields"`
+		Fields  []Variable `json:"fields"`
 		Methods []Function `json:"methods"`
 	}{
 		s.name, s.fields, s.methods,
