@@ -21,11 +21,14 @@ func NewBuild() *Build {
 	return &Build{}
 }
 
+// MarshalJSON is a helper function for the go
+// json marshaller, as all fields are by default
+// unexported
 func (b *Build) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		Package string `json:"package"`
-		Imports []string `json:"imports"`
-		Structs []Struct `json:"structs"`
+		Package   string `json:"package"`
+		Imports   []string `json:"imports"`
+		Structs   []Struct `json:"structs"`
 		Functions []Function `json:"functions"`
 	}{
 		b.pack, b.imports, b.structs, b.functions,
@@ -55,7 +58,7 @@ func (b *Build) HasImport(check string) bool {
 	return false
 }
 
-// GetFunction searches only first layer functions of the
+// FindFunction searches only first layer functions of the
 // build. This does not include any methods or anonymous
 // functions inside other functions
 func (b *Build) FindFunction(name string) Function {
@@ -157,8 +160,11 @@ func (b *Build) handleTypeSpec(spec *ast.TypeSpec) {
 
 	switch specValue := spec.Type.(type) {
 	case *ast.StructType:
-		//iterate over fields
+		// parse the structure type
 		b.parseStructure(specName, specValue)
+	case *ast.InterfaceType:
+		// parse the interface type
+		b.parseInterface(specName, specValue)
 	}
 }
 
@@ -180,6 +186,10 @@ func (b *Build) parseStructure(name string, st *ast.StructType) {
 
 	// add to the list of the structures
 	b.structs = append(b.structs, stru)
+}
+
+func (b *Build) parseInterface(name string, st *ast.InterfaceType) {
+
 }
 
 func (b *Build) handleImportSpec(spec *ast.ImportSpec) {

@@ -5,12 +5,13 @@ import (
 	"encoding/json"
 )
 
+// Field is any field from the Struct field, to function
+// parameter fields
 type Field interface {
 	Name() string
 }
 
-// StructField defines a field that is present
-// within the structure in the build
+// FieldImpl defines an implementation of the Field interface
 type FieldImpl struct {
 	name string
 }
@@ -20,6 +21,8 @@ func (f *FieldImpl) Name() string {
 	return f.name
 }
 
+// Struct is a definition for the Struct entities
+// present in the Build
 type Struct interface {
 	Name() string
 	// getters
@@ -32,8 +35,9 @@ type Struct interface {
 	AST() *ast.StructType
 }
 
-// Struct is declaration of any structure type
-// defined within the Build
+// StructImpl defined the implementation of the Struct
+// interface, which can be used transparently with the
+// architect package
 type StructImpl struct {
 	name      string
 	fields    []Field
@@ -67,6 +71,8 @@ func (s *StructImpl) Field(name string) Field {
 	return nil
 }
 
+// AddMethod adds given method into the existing set of
+// methods
 func (s *StructImpl) AddMethod(method Function) {
 	s.methods = append(s.methods, method)
 }
@@ -83,6 +89,8 @@ func (s *StructImpl) Method(name string) Function {
 	return nil
 }
 
+// MarshalJSON is a helper method for the json marshaller,
+// which is needed as all fields are unexported
 func (s *StructImpl) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Name    string `json:"name"`
@@ -93,6 +101,7 @@ func (s *StructImpl) MarshalJSON() ([]byte, error) {
 	})
 }
 
+// AST returns the underlying ast node of the StructImpl
 func (s *StructImpl) AST() *ast.StructType {
 	return s.astStruct
 }

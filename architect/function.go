@@ -12,7 +12,7 @@ type Function interface {
 	Exported() bool
 }
 
-// Function is an entity that provides basic information
+// FunctionImpl is an entity that provides basic information
 // about the functions that are stored inside the first
 // layer or struct methods
 type FunctionImpl struct {

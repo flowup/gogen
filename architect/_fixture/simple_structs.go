@@ -1,4 +1,4 @@
-package architect
+package fixture
 
 import (
 	"fmt"
