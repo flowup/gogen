@@ -5,13 +5,12 @@ import (
 	"sync"
 
 	"github.com/alecthomas/kingpin"
-	"github.com/flowup/gogen/unk"
 	"github.com/op/go-logging"
 )
 
 var (
 	// resources is set resources that were firstly defined
-	resources ResourceContainer
+	//resources ResourceContainer
 
 	// pipes is set of pipelines that should be run when
 	// generate is called
@@ -19,7 +18,7 @@ var (
 
 	// importers is a collection of available importers in
 	// the current session of generator
-	importers unk.ImporterCollection
+	//importers unk.ImporterCollection
 
 	// cmdSources is a set of sources that was passed by the
 	// command line. All these sources will be recognized by
@@ -41,19 +40,6 @@ func init() {
 	formatter := logging.NewBackendFormatter(backend, logFormat)
 
 	logging.SetBackend(formatter)
-}
-
-// Define will store the defined model for the use in
-// the generators.
-func Define(resource interface{}) {
-	switch val := resource.(type) {
-	case RemoteResource:
-		// append all fetched resources from the remote
-		resources = append(resources, val.Get()...)
-	default:
-		// not known resource, append
-		resources = append(resources, resource)
-	}
 }
 
 // Pipe will register new pipe that will be run
@@ -81,11 +67,11 @@ func Generate() {
 	for _, srcPath := range *cmdSources {
 		genlog.Info("Resolving resource [%s]", srcPath)
 		// get the source and resolve it
-		src := unk.NewSource(srcPath)
-		err := src.Resolve()
-		if err != nil {
-			panic("Given source could not be resolved")
-		}
+		//src := unk.NewSource(srcPath)
+		//err := src.Resolve()
+		//if err != nil {
+		//	panic("Given source could not be resolved")
+		//}
 	}
 
 	// go through each pipe
@@ -95,7 +81,7 @@ func Generate() {
 		go func(pipe Pipeline, pipeindex int) {
 			for _, gen := range pipe.generators {
 				genlog.Info("Starting generator %s in pipe %d", gen.Name(), pipeindex)
-				gen.Initialize(&resources, genlog)
+				//gen.Initialize(&resources, genlog)
 
 				err := gen.Generate()
 				if err != nil {

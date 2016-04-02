@@ -27,7 +27,7 @@ var (
 type Generable interface {
 	// Initialize is called just before generate to
 	// pass the generator resources that should be used
-	Initialize(resources *ResourceContainer, log *logging.Logger)
+	Initialize(log *logging.Logger)
 	// Generate is entry point to the generator. This
 	// method is called only once, when the generator
 	// is invoked
@@ -81,9 +81,6 @@ func (s *SavePlate) FullFileName() string {
 type Generator struct {
 	// directory to which should all outputs go
 	OutputDir string
-	// Resources stores all Resources that were passed
-	// to the current generator context
-	Resources *ResourceContainer
 	// Templates is map of maps of templates, where first
 	// key of the map is name of the template
 	Templates map[string]SavePlate
@@ -93,8 +90,7 @@ type Generator struct {
 
 // Initialize accepts resources that should be used by
 // the current generator context
-func (g *Generator) Initialize(resources *ResourceContainer, log *logging.Logger) {
-	g.Resources = resources
+func (g *Generator) Initialize(log *logging.Logger) {
 	g.Templates = make(map[string]SavePlate)
 	// validate the output dir
 	g.SetOutputDir(g.OutputDir)
