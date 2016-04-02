@@ -18,7 +18,7 @@ func (s *BuildSuite) SetupTest() {
 	var fset token.FileSet
 
 	// parse the ast from the given file
-	ast, err := parser.ParseFile(&fset, "./fixture.go", nil, parser.AllErrors)
+	ast, err := parser.ParseFile(&fset, "./_fixture/simple_structs.go", nil, parser.AllErrors)
 	assert.Equal(s.T(), nil, err)
 
 	// create build and make it from the AST

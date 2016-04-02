@@ -11,7 +11,7 @@ type Field interface {
 // StructField defines a field that is present
 // within the structure in the build
 type FieldImpl struct {
-	name string
+	name string `json:"name"`
 }
 
 // Name returns name of the current Field instance
@@ -29,12 +29,12 @@ type Struct interface {
 // Struct is declaration of any structure type
 // defined within the Build
 type StructImpl struct {
-	name      string
-	fields    []Field
-	methods   []Function
+	name      string `json:"name"`
+	fields    []Field `json:"fields"`
+	methods   []Function `json:"methods"`
 
 	// Back-links to the AST
-	astStruct *ast.StructType
+	astStruct *ast.StructType `json:"-"`
 }
 
 // NewStruct returns new StructImpl object populated
