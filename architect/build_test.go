@@ -35,8 +35,8 @@ func (s *BuildSuite) TestStructDefinitions() {
 	assert.Equal(s.T(), 2, len(s.build.structs))
 
 	// check struct properties
-	assert.Equal(s.T(), "X_Test", s.build.structs[0].name)
-	assert.Equal(s.T(), "Y_Test", s.build.structs[1].name)
+	assert.Equal(s.T(), "X_Test", s.build.structs[0].Name())
+	assert.Equal(s.T(), "Y_Test", s.build.structs[1].Name())
 }
 
 func (s *BuildSuite) TestImports() {
@@ -51,11 +51,11 @@ func (s *BuildSuite) TestFunctions() {
 
 	fn := s.build.FindFunction("Function_Test")
 	assert.NotEqual(s.T(), nil, fn)
-	assert.Equal(s.T(), true, fn.exported)
+	assert.Equal(s.T(), true, fn.Exported())
 
 	unexpFn := s.build.FindFunction("unexported_Test")
 	assert.NotEqual(s.T(), nil, unexpFn)
-	assert.Equal(s.T(), false, unexpFn.exported)
+	assert.Equal(s.T(), false, unexpFn.Exported())
 }
 
 func (s *BuildSuite) TestFindStructAndMethods() {

@@ -4,20 +4,32 @@ import (
 	"go/ast"
 	"unicode"
 	"fmt"
+	"encoding/json"
 )
 
 // Build stores symbols that are available
 // in the given package or file.
 type Build struct {
-	pack      string          // name of the package
-	imports   []string        // list of import packages
-	structs   []*StructImpl   // list of structures in the build
-	functions []*FunctionImpl // list of functions in the build
+	pack      string     // name of the package
+	imports   []string   // list of import packages
+	structs   []Struct   // list of structures in the build
+	functions []Function // list of functions in the build
 }
 
 // NewBuild will return new Build
 func NewBuild() *Build {
 	return &Build{}
+}
+
+func (b *Build) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Package string `json:"package"`
+		Imports []string `json:"imports"`
+		Structs []Struct `json:"structs"`
+		Functions []Function `json:"functions"`
+	}{
+		b.pack, b.imports, b.structs, b.functions,
+	})
 }
 
 // Package returns name of the package which
@@ -46,9 +58,9 @@ func (b *Build) HasImport(check string) bool {
 // GetFunction searches only first layer functions of the
 // build. This does not include any methods or anonymous
 // functions inside other functions
-func (b *Build) FindFunction(name string) *FunctionImpl {
+func (b *Build) FindFunction(name string) Function {
 	for _, fn := range b.functions {
-		if fn.name == name {
+		if fn.Name() == name {
 			return fn
 		}
 	}
@@ -58,9 +70,9 @@ func (b *Build) FindFunction(name string) *FunctionImpl {
 
 // FindStruct searches for the given structure name in the
 // build and returns the first match
-func (b *Build) FindStruct(name string) *StructImpl {
+func (b *Build) FindStruct(name string) Struct {
 	for _, st := range b.structs {
-		if st.name == name {
+		if st.Name() == name {
 			return st
 		}
 	}
@@ -124,8 +136,8 @@ func (b *Build) parseFunction(f *ast.FuncDecl) {
 		// and add method to the structure methods
 		found := false
 		for _, s := range b.structs {
-			if s.astStruct == f.Recv.List[0].Type.(*ast.StarExpr).X.(*ast.Ident).Obj.Decl.(*ast.TypeSpec).Type.(*ast.StructType) {
-				s.methods = append(s.methods, fun)
+			if s.AST() == f.Recv.List[0].Type.(*ast.StarExpr).X.(*ast.Ident).Obj.Decl.(*ast.TypeSpec).Type.(*ast.StructType) {
+				s.AddMethod(fun)
 				found = true
 				break
 			}

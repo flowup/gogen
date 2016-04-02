@@ -2,6 +2,7 @@ package architect
 
 import (
 	"go/ast"
+	"encoding/json"
 )
 
 type Field interface {
@@ -22,19 +23,25 @@ func (f *FieldImpl) Name() string {
 type Struct interface {
 	Name() string
 	// getters
-	Field(name string)
+	Field(name string) Field
+
+	AddMethod(method Function)
 	Method(name string) Function
+	// json marshaler
+	MarshalJSON() ([]byte, error)
+	// AST type getter
+	AST() *ast.StructType
 }
 
 // Struct is declaration of any structure type
 // defined within the Build
 type StructImpl struct {
-	name      string `json:"name"`
-	fields    []Field `json:"fields"`
-	methods   []Function `json:"methods"`
+	name      string
+	fields    []Field
+	methods   []Function
 
 	// Back-links to the AST
-	astStruct *ast.StructType `json:"-"`
+	astStruct *ast.StructType
 }
 
 // NewStruct returns new StructImpl object populated
@@ -61,6 +68,10 @@ func (s *StructImpl) Field(name string) Field {
 	return nil
 }
 
+func (s *StructImpl) AddMethod(method Function) {
+	s.methods = append(s.methods, method)
+}
+
 // Method searches for the method by the name in
 // the current structure instance
 func (s *StructImpl) Method(name string) Function {
@@ -71,4 +82,18 @@ func (s *StructImpl) Method(name string) Function {
 	}
 
 	return nil
+}
+
+func (s *StructImpl) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Name    string `json:"name"`
+		Fields  []Field `json:"fields"`
+		Methods []Function `json:"methods"`
+	}{
+		s.name, s.fields, s.methods,
+	})
+}
+
+func (s *StructImpl) AST() *ast.StructType {
+	return s.astStruct
 }
