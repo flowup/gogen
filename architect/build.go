@@ -97,11 +97,11 @@ func (b *Build) Make(tree *ast.File) {
 			for _, spec := range declValue.Specs {
 				switch specValue := spec.(type) {
 				case *ast.TypeSpec:
-					b.makeTypeSpec(specValue)
+					b.handleTypeSpec(specValue)
 				case *ast.ImportSpec:
-					b.makeImportSpec(specValue)
+					b.handleImportSpec(specValue)
 				case *ast.ValueSpec:
-					b.makeValueSpec(specValue)
+					b.handleValueSpec(specValue)
 				}
 			}
 		// catch function declarations
@@ -134,22 +134,40 @@ func (b *Build) parseFunction(f *ast.FuncDecl) {
 	b.functions = append(b.functions, fun)
 }
 
-func (b *Build) makeTypeSpec(spec *ast.TypeSpec) {
+func (b *Build) handleTypeSpec(spec *ast.TypeSpec) {
+
+	// pre-save spec name - this may include validations
+	// in the future
+	specName := spec.Name.Name
+
+	switch specValue := spec.Type.(type) {
+	case *ast.StructType:
+		//iterate over fields
+		b.parseStructure(specName, specValue)
+	}
+}
+
+func (b *Build) parseStructure(name string, st *ast.StructType) {
 	stru := &Struct{
-		Name: spec.Name.Name,
+		Name: name,
 	}
 
-	//switch specValue := spec.Type.(type) {
-	//case *ast.StructType:
 	// iterate over fields
-	//}
+	for _, field := range st.Fields.List {
+		f := &StructField{
+			Name: field.Names[0].Name,
+		}
 
+		stru.Fields = append(stru.Fields, f)
+	}
+
+	// add to the list of the structs
 	b.structs = append(b.structs, stru)
 }
 
-func (b *Build) makeImportSpec(spec *ast.ImportSpec) {
+func (b *Build) handleImportSpec(spec *ast.ImportSpec) {
 }
 
-func (b *Build) makeValueSpec(spec *ast.ValueSpec) {
+func (b *Build) handleValueSpec(spec *ast.ValueSpec) {
 
 }

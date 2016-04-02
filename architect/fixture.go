@@ -11,7 +11,8 @@ import (
 // changed or moved.
 
 type X_Test struct {
-
+	unexported string
+	Exported string
 }
 
 func (x *X_Test) X_Test_Method() {
