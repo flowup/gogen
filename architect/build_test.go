@@ -49,13 +49,28 @@ func (s *BuildSuite) TestImports() {
 func (s *BuildSuite) TestFunctions() {
 	assert.Equal(s.T(), 4, len(s.build.functions))
 
-	fn := s.build.GetFunction("Function_Test")
+	fn := s.build.FindFunction("Function_Test")
 	assert.NotEqual(s.T(), nil, fn)
-	assert.Equal(s.T(), true, fn.Exported)
+	assert.Equal(s.T(), true, fn.exported)
 
-	unexpFn := s.build.GetFunction("unexported_Test")
+	unexpFn := s.build.FindFunction("unexported_Test")
 	assert.NotEqual(s.T(), nil, unexpFn)
-	assert.Equal(s.T(), false, unexpFn.Exported)
+	assert.Equal(s.T(), false, unexpFn.exported)
+}
+
+func (s *BuildSuite) TestFindStructAndMethods() {
+	assert.NotEqual(s.T(), nil, s.build.FindStruct("X_Test"))
+	assert.NotEqual(s.T(), nil, s.build.FindStruct("Y_Test"))
+
+	xTest := s.build.FindStruct("X_Test")
+	yTest := s.build.FindStruct("Y_Test")
+
+	assert.NotEqual(s.T(), nil, xTest.FindMethod("X_Test_Method"))
+	assert.Equal(s.T(), nil, yTest.FindMethod("Y_Test_Unexisting_Method"))
+}
+
+func (s *BuildSuite) TestStructures() {
+	assert.Equal(s.T(), 2, len(s.build.structs))
 }
 
 func TestBuildSuite(t *testing.T) {
