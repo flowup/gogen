@@ -33,6 +33,10 @@ func (s *ParseSuite) TestParseDir() {
 	assert.Equal(s.T(), 2, len(build.Files))
 }
 
+func (s *ParseSuite) TestParseFileAST() {
+
+}
+
 func TestParseSuite(t *testing.T) {
 	suite.Run(t, new(ParseSuite))
 }

@@ -63,8 +63,24 @@ func ParseFile(path string) (*Build, error) {
 
 // ParseFileAST creates a File parse with all necessary
 // structures.
-func ParseFileAST(name string, ast *ast.File) (*File, error) {
-	f := NewFile(name, ast)
+func ParseFileAST(name string, tree *ast.File) (*File, error) {
+	f := NewFile(name, tree)
+
+	for _, declaration := range tree.Decls {
+		switch decValue := declaration.(type) {
+		// catch only generic declarations
+		case *ast.GenDecl:
+			for _, spec := range decValue.Specs {
+				switch /*specValue :=*/spec.(type) {
+				case *ast.TypeSpec:
+				case *ast.ImportSpec:
+				case *ast.ValueSpec:
+				}
+			}
+		// catch function declarations
+		case *ast.FuncDecl:
+		}
+	}
 
 	return f, nil
 }
