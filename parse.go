@@ -24,11 +24,13 @@ func ParseDir(path string) (*Build, error) {
 	for _, pkg := range packages {
 		// iterate over all files within the package
 		for name, ast := range pkg.Files {
-			fileAST, err := ParseFileAST(name, ast)
+			baseName := filepath.Base(name)
+
+			fileAST, err := ParseFileAST(baseName, ast)
 			if err != nil {
 				return nil, err
 			}
-			build.AddFile(name, fileAST)
+			build.AddFile(baseName, fileAST)
 		}
 	}
 
