@@ -3,7 +3,20 @@ package gogen
 import "go/ast"
 
 type File struct {
+	name string // name of the file
 	parent *ast.File
+}
+
+func NewFile(name string, parent *ast.File) *File {
+	return &File{name, parent}
+}
+
+func (f *File) Name() string {
+	return f.name
+}
+
+func (f *File) Package() string {
+	return f.parent.Name.Name
 }
 
 type Build struct {
