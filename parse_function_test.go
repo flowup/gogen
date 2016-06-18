@@ -32,6 +32,13 @@ func (s *ParseFunctionSuite) TestParseFunction() {
 	assert.Equal(s.T(), false, fun.IsMethod())
 }
 
+func (s *ParseFunctionSuite) TestParseMethod() {
+	st := s.file.Struct("X")
+	assert.NotEqual(s.T(), nil, st)
+	assert.Equal(s.T(), 1, len(st.Methods()))
+	assert.Equal(s.T(), "Add", st.Method("Add").Name())
+}
+
 func TestParseFunctionSuite(t *testing.T) {
 	suite.Run(t, &ParseFunctionSuite{})
 }

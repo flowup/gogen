@@ -98,6 +98,30 @@ func ParseFileAST(name string, tree *ast.File) (*File, error) {
 				f.AddFunction(fun)
 			} else {
 				// add the function to the structure it belongs to
+				if len(fun.parent.Recv.List) <= 0 {
+					// TODO: no receiver defined report?
+					break
+				}
+
+				// struct that should be assigned the method
+				var structType *ast.StructType
+
+				switch receiver := fun.parent.Recv.List[0].Type.(type) {
+				// pointer receiver
+				case *ast.StarExpr:
+					structType = receiver.X.(*ast.Ident).Obj.Decl.(*ast.TypeSpec).Type.(*ast.StructType)
+				// copy receiver
+				case *ast.Ident:
+					structType = receiver.Obj.Decl.(*ast.TypeSpec).Type.(*ast.StructType)
+				}
+
+				// search for the structures that receive the method
+				// and bind it
+				for _, st := range f.structures {
+					if st.parent == structType {
+						st.AddMethod(fun)
+					}
+				}
 			}
 		}
 	}
