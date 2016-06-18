@@ -19,6 +19,19 @@ func (f *StructField) Name() string {
 type Structure struct {
 	parent *ast.StructType
 	spec *ast.TypeSpec
+
+	// map of methods
+	methods map[string]*Function
+}
+
+// NewStructure returns new Instance of the structure type
+// with the provided parent and type spec.
+func NewStructure(parent *ast.StructType, spec *ast.TypeSpec) *Structure {
+	return &Structure{
+		parent: parent,
+		spec: spec,
+		methods: make(map[string]*Function),
+	}
 }
 
 // Name returns the name of the given structure
@@ -44,11 +57,35 @@ func (s *Structure) Fields() []*StructField {
 	return fields
 }
 
+// AddMethod binds a method into the current structure
+func (s *Structure) AddMethod(fun *Function) {
+	s.methods[fun.Name()] = fun
+}
+
+// Method returns a Function bound to the current structure
+func (s *Structure) Method(name string) *Function {
+	return s.methods[name]
+}
+
+// Methods returns all Function-s found to the current structure
+func (s *Structure) Methods() map[string]*Function {
+	return s.methods
+}
+
 // Interface represents the interface type of a
 // given build
 type Interface struct {
 	parent *ast.InterfaceType
 	spec *ast.TypeSpec
+}
+
+// NewInterface creates a new Interface type and returns
+// it with the provided parent and spec.
+func NewInterface(parent *ast.InterfaceType, spec *ast.TypeSpec) *Interface {
+	return &Interface{
+		parent: parent,
+		spec: spec,
+	}
 }
 
 // Name returns the name of the interface type
@@ -57,13 +94,13 @@ func (i *Interface) Name()  string {
 }
 
 func ParseStruct(spec *ast.TypeSpec, parent *ast.StructType) *Structure {
-	s := &Structure{parent, spec}
+	s := NewStructure(parent, spec)
 
 	return s
 }
 
 func ParseInterface(spec *ast.TypeSpec, parent *ast.InterfaceType) *Interface {
-	i := &Interface{parent, spec}
+	i := NewInterface(parent, spec)
 
 	return i
 }
