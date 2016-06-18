@@ -5,6 +5,7 @@ import (
 	"go/token"
 	"go/ast"
 	"path/filepath"
+	"fmt"
 )
 
 // ParseDir will create a Build from the directory that
@@ -73,14 +74,23 @@ func ParseFileAST(name string, tree *ast.File) (*File, error) {
 		// catch only generic declarations
 		case *ast.GenDecl:
 			for _, spec := range decValue.Specs {
-				switch /*specValue :=*/spec.(type) {
+				switch specValue := spec.(type) {
 				case *ast.TypeSpec:
+					switch typeValue := specValue.Type.(type) {
+					case *ast.StructType:
+						ParseStruct(typeValue)
+					case *ast.InterfaceType:
+						ParseInterface(typeValue)
+					}
 				case *ast.ImportSpec:
 				case *ast.ValueSpec:
+				default:
+					fmt.Println("Generic value not recognized: ", specValue)
 				}
 			}
 		// catch function declarations
 		case *ast.FuncDecl:
+
 		}
 	}
 
