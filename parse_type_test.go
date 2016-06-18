@@ -7,10 +7,15 @@ import (
 	"path/filepath"
 )
 
+// Please note that this test suite refers to the
+// test_fixtures/simple.go test file.
 type ParseTypeSuite struct {
 	suite.Suite
 	build *Build
 	file *File
+
+	st *Structure
+	in *Interface
 }
 
 func (s *ParseTypeSuite) SetupTest() {
@@ -18,6 +23,12 @@ func (s *ParseTypeSuite) SetupTest() {
 	s.build, err = ParseFile(SimpleFilePath)
 	assert.Equal(s.T(), nil, err)
 	s.file = s.build.Files[filepath.Base(SimpleFilePath)]
+
+	s.st = s.file.Struct("X")
+	assert.NotEqual(s.T(), (*Structure)(nil), s.st)
+
+	s.in = s.file.Interface("Y")
+	assert.NotEqual(s.T(), (*Interface)(nil), s.in)
 }
 
 // the parsing capability is already tested by the
@@ -25,13 +36,16 @@ func (s *ParseTypeSuite) SetupTest() {
 // that is already called by the ParseFile function in the
 // test setup
 func (s *ParseTypeSuite) TestParseStruct() {
-	st := s.file.Struct("X")
-	assert.NotEqual(s.T(), (*Structure)(nil), st)
+	assert.Equal(s.T(), "X", s.st.Name())
 }
 
 func (s *ParseTypeSuite) TestParseInterface() {
-	in := s.file.Interface("Y")
-	assert.NotEqual(s.T(), (*Interface)(nil), in)
+	assert.Equal(s.T(), "Y", s.in.Name())
+}
+
+func (s *ParseTypeSuite) TestStructureFields() {
+	assert.Equal(s.T(), 1, len(s.st.Fields()))
+	assert.Equal(s.T(), "Val", s.st.Fields()[0].Name())
 }
 
 func TestParseTypeSuite(t *testing.T) {
