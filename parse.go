@@ -76,11 +76,13 @@ func ParseFileAST(name string, tree *ast.File) (*File, error) {
 			for _, spec := range decValue.Specs {
 				switch specValue := spec.(type) {
 				case *ast.TypeSpec:
+					// all cases should pass in also specValue as
+					// it is the underlying spec
 					switch typeValue := specValue.Type.(type) {
 					case *ast.StructType:
-						ParseStruct(typeValue)
+						f.AddStruct(ParseStruct(specValue, typeValue))
 					case *ast.InterfaceType:
-						ParseInterface(typeValue)
+						f.AddInterface(ParseInterface(specValue, typeValue))
 					}
 				case *ast.ImportSpec:
 				case *ast.ValueSpec:

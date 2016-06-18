@@ -6,12 +6,20 @@ import "go/ast"
 type File struct {
 	name string // name of the file
 	parent *ast.File
+	// types
+	structures map[string]*Structure
+	interfaces map[string]*Interface
 }
 
 // NewFile creates a new File instance with provided
 // file name and it's parent ast.File.
 func NewFile(name string, parent *ast.File) *File {
-	return &File{name, parent}
+	return &File{
+		name: name,
+		parent: parent,
+		structures: make(map[string]*Structure),
+		interfaces: make(map[string]*Interface),
+	}
 }
 
 // Name returns the base name of the file. This will
@@ -24,6 +32,30 @@ func (f *File) Name() string {
 // referenced by the file
 func (f *File) Package() string {
 	return f.parent.Name.Name
+}
+
+// AddStruct adds passed structure type into the
+// structures described by the File
+func (f *File) AddStruct(s *Structure) {
+	f.structures[s.Name()] = s
+}
+
+// Struct returns a structure with the given name.
+// If the structure could not be found, returns nil
+func (f *File) Struct(name string) *Structure {
+	return f.structures[name]
+}
+
+// AddInterface adds passed interface type into the
+// interfaces described by the File
+func (f *File) AddInterface(i *Interface) {
+	f.interfaces[i.Name()] = i
+}
+
+// Interface returns an interface with the given name.
+// If no interface with the name was found, returns nil
+func (f *File) Interface(name string) *Interface {
+	return f.interfaces[name]
 }
 
 // Build is an entity that holds the file map. It can be

@@ -7,3 +7,7 @@ type X struct {
 func (x *X) Add(y *X) {
 	x.Val += y.Val
 }
+
+type Y interface {
+	quack()
+}

@@ -27,6 +27,8 @@ func (s *ParseSuite) TestParseFile() {
 	build, err := ParseFile(SimpleFilePath)
 	assert.Equal(s.T(), nil, err)
 	assert.NotEqual(s.T(), (*Build)(nil), build)
+	// there should be only one file, as only one was
+	// parsed by the build
 	assert.Equal(s.T(), 1, len(build.Files))
 	assert.NotEqual(s.T(), nil, build.Files[fileName])
 }
