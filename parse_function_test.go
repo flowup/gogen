@@ -35,8 +35,9 @@ func (s *ParseFunctionSuite) TestParseFunction() {
 func (s *ParseFunctionSuite) TestParseMethod() {
 	st := s.file.Struct("X")
 	assert.NotEqual(s.T(), nil, st)
-	assert.Equal(s.T(), 1, len(st.Methods()))
+	assert.Equal(s.T(), 2, len(st.Methods()))
 	assert.Equal(s.T(), "Add", st.Method("Add").Name())
+	assert.Equal(s.T(), "Copy", st.Method("Copy").Name())
 }
 
 func TestParseFunctionSuite(t *testing.T) {

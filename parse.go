@@ -85,7 +85,9 @@ func ParseFileAST(name string, tree *ast.File) (*File, error) {
 						f.AddInterface(ParseInterface(specValue, typeValue))
 					}
 				case *ast.ImportSpec:
+					// just ignore for now
 				case *ast.ValueSpec:
+					// just ignore for now
 				default:
 					fmt.Println("Generic value not recognized: ", specValue)
 				}
