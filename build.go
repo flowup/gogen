@@ -9,6 +9,7 @@ type File struct {
 	// types
 	structures map[string]*Structure
 	interfaces map[string]*Interface
+	functions map[string]*Function
 }
 
 // NewFile creates a new File instance with provided
@@ -19,6 +20,7 @@ func NewFile(name string, parent *ast.File) *File {
 		parent: parent,
 		structures: make(map[string]*Structure),
 		interfaces: make(map[string]*Interface),
+		functions: make(map[string]*Function),
 	}
 }
 
@@ -56,6 +58,24 @@ func (f *File) AddInterface(i *Interface) {
 // If no interface with the name was found, returns nil
 func (f *File) Interface(name string) *Interface {
 	return f.interfaces[name]
+}
+
+// AddFunction will add the passed function into the
+// map of functions described by the file
+func (f *File) AddFunction(fun *Function) {
+	f.functions[fun.Name()] = fun
+}
+
+// Function will return a function by it's name. If no
+// function is found, this will return nil
+func (f *File) Function(name string) *Function {
+	return f.functions[name]
+}
+
+// Functions will return a full map of functions provided
+// by the file
+func (f *File) Functions() map[string]*Function {
+	return f.functions
 }
 
 // Build is an entity that holds the file map. It can be

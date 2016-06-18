@@ -92,7 +92,13 @@ func ParseFileAST(name string, tree *ast.File) (*File, error) {
 			}
 		// catch function declarations
 		case *ast.FuncDecl:
-
+			fun := ParseFunction(decValue)
+			if !fun.IsMethod() {
+				// add the function to the top level map
+				f.AddFunction(fun)
+			} else {
+				// add the function to the structure it belongs to
+			}
 		}
 	}
 
