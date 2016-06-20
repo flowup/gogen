@@ -48,6 +48,12 @@ func (f *File) Struct(name string) *Structure {
 	return f.structures[name]
 }
 
+// Structs returns a map of structures contained
+// within the requested file
+func (f *File) Structs() map[string]*Structure {
+	return f.structures
+}
+
 // AddInterface adds passed interface type into the
 // interfaces described by the File
 func (f *File) AddInterface(i *Interface) {
