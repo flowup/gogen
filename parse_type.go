@@ -2,6 +2,12 @@ package gogen
 
 import "go/ast"
 
+const (
+	PrimitiveType = 0
+	SliceType
+	MapType
+)
+
 // StructField encapsulates one field of the Structure
 type StructField struct {
 	parent *ast.Field
@@ -14,9 +20,19 @@ func (f *StructField) Name() string {
 	return f.name
 }
 
-// Type returns type of the field as string
-func (f *StructField) Type() string {
-	return f.parent.Type.(*ast.Ident).Name
+// Type returns type of the field as a string and
+// FieldType such as Slice, Map or Primitive
+func (f *StructField) Type() (string, int) {
+	switch t := f.parent.Type.(type) {
+	case *ast.Ident:
+		return t.Name, PrimitiveType
+	case *ast.ArrayType:
+		return t.Elt.(*ast.Ident).Name, SliceType
+	case *ast.MapType:
+		return "[" + t.Key.(*ast.Ident).Name + "]" + t.Value.(*ast.Ident).Name, MapType
+	default:
+		panic("StructField type not recognized! Please report this issue.")
+	}
 }
 
 // Structure represents the struct type of a

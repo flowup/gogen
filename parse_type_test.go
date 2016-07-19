@@ -44,9 +44,22 @@ func (s *ParseTypeSuite) TestParseInterface() {
 }
 
 func (s *ParseTypeSuite) TestStructureFields() {
-	assert.Equal(s.T(), 1, len(s.st.Fields()))
+	assert.Equal(s.T(), 3, len(s.st.Fields()))
+
 	assert.Equal(s.T(), "Val", s.st.Fields()[0].Name())
-	assert.Equal(s.T(), "int", s.st.Fields()[0].Type())
+	intType, intSubType := s.st.Fields()[0].Type()
+	assert.Equal(s.T(), "int", intType)
+	assert.Equal(s.T(), PrimitiveType, intSubType)
+
+	assert.Equal(s.T(), "SliceVal", s.st.Fields()[1].Name())
+	sliceType, sliceSubtype := s.st.Fields()[1].Type()
+	assert.Equal(s.T(), "string", sliceType)
+	assert.Equal(s.T(), SliceType, sliceSubtype)
+
+	assert.Equal(s.T(), "MapVal", s.st.Fields()[2].Name())
+	mapType, mapSubtype := s.st.Fields()[2].Type()
+	assert.Equal(s.T(), "[string]int", mapType)
+	assert.Equal(s.T(), MapType, mapSubtype)
 }
 
 func TestParseTypeSuite(t *testing.T) {
