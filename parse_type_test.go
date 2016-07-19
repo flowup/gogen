@@ -46,6 +46,7 @@ func (s *ParseTypeSuite) TestParseInterface() {
 func (s *ParseTypeSuite) TestStructureFields() {
 	assert.Equal(s.T(), 1, len(s.st.Fields()))
 	assert.Equal(s.T(), "Val", s.st.Fields()[0].Name())
+	assert.Equal(s.T(), "int", s.st.Fields()[0].Type())
 }
 
 func TestParseTypeSuite(t *testing.T) {

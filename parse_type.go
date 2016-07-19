@@ -14,6 +14,11 @@ func (f *StructField) Name() string {
 	return f.name
 }
 
+// Type returns type of the field as string
+func (f *StructField) Type() string {
+	return f.parent.Type.(*ast.Ident).Name
+}
+
 // Structure represents the struct type of a
 // given build
 type Structure struct {
