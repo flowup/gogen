@@ -4,8 +4,8 @@ import "go/ast"
 
 const (
 	PrimitiveType = 0
-	SliceType
-	MapType
+	SliceType = 1
+	MapType = 2
 )
 
 // StructField encapsulates one field of the Structure
