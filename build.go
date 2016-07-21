@@ -96,6 +96,19 @@ func (f *File) Function(name string) *Function {
 	return f.functions[name]
 }
 
+type FilteredFunctions map[string]*Function
+
+func (f FilteredFunctions) Filter (name string) map[string]*Function {
+  newMap := make(map[string]*Function)
+  for it := range f {
+    if f[it].Tags().HasTag(name) {
+      newMap[it] = f[it]
+    }
+  }
+
+  return newMap
+}
+
 // Functions will return a full map of functions provided
 // by the file
 func (f *File) Functions() map[string]*Function {
