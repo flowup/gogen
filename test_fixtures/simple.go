@@ -2,6 +2,8 @@ package fixture
 
 import "math"
 
+// @dao --asdf "val poi" --qwer 654
+// @test -r="q w e r"
 type X struct {
 	Val int
 	SliceVal []string

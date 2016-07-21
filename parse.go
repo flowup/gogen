@@ -24,10 +24,13 @@ func ParseDir(path string) (*Build, error) {
 	// iterate over all packages in the directory
 	for _, pkg := range packages {
 		// iterate over all files within the package
-		for name, ast := range pkg.Files {
+		for name, astTree := range pkg.Files {
 			baseName := filepath.Base(name)
 
-			fileAST, err := ParseFileAST(baseName, ast)
+      // create a comment map from file
+      commentMap := ast.NewCommentMap(&fileSet, astTree, astTree.Comments)
+
+			fileAST, err := ParseFileAST(baseName, astTree, commentMap)
 			if err != nil {
 				return nil, err
 			}
@@ -42,18 +45,21 @@ func ParseDir(path string) (*Build, error) {
 // was passed. FileSet of the Build will only contain a
 // single file.
 func ParseFile(path string) (*Build, error) {
-	var fileSet token.FileSet
+  var fileSet token.FileSet
 
-	ast, err := parser.ParseFile(&fileSet, path, nil, parser.AllErrors)
+	astTree, err := parser.ParseFile(&fileSet, path, nil, parser.AllErrors | parser.ParseComments)
 	if err != nil {
 		return nil, err
 	}
 
 	fileName := filepath.Base(path)
 
+  // create a comment map from file
+  commentMap := ast.NewCommentMap(&fileSet, astTree, astTree.Comments)
+
 	// create new build for the file
 	build := NewBuild()
-	fileAST, err := ParseFileAST(fileName, ast)
+	fileAST, err := ParseFileAST(fileName, astTree, commentMap)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +72,7 @@ func ParseFile(path string) (*Build, error) {
 
 // ParseFileAST creates a File parse with all necessary
 // structures.
-func ParseFileAST(name string, tree *ast.File) (*File, error) {
+func ParseFileAST(name string, tree *ast.File, commentMap ast.CommentMap) (*File, error) {
 	f := NewFile(name, tree)
 
 	for _, declaration := range tree.Decls {
@@ -80,9 +86,9 @@ func ParseFileAST(name string, tree *ast.File) (*File, error) {
 					// it is the underlying spec
 					switch typeValue := specValue.Type.(type) {
 					case *ast.StructType:
-						f.AddStruct(ParseStruct(specValue, typeValue))
+						f.AddStruct(ParseStruct(specValue, typeValue, commentMap.Filter(declaration)))
 					case *ast.InterfaceType:
-						f.AddInterface(ParseInterface(specValue, typeValue))
+						f.AddInterface(ParseInterface(specValue, typeValue, commentMap.Filter(declaration)))
 					}
 				case *ast.ImportSpec:
 					// just ignore for now
@@ -94,7 +100,7 @@ func ParseFileAST(name string, tree *ast.File) (*File, error) {
 			}
 		// catch function declarations
 		case *ast.FuncDecl:
-			fun := ParseFunction(decValue)
+			fun := ParseFunction(decValue, commentMap.Filter(declaration))
 			if !fun.IsMethod() {
 				// add the function to the top level map
 				f.AddFunction(fun)

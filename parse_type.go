@@ -43,15 +43,17 @@ type Structure struct {
 
 	// map of methods
 	methods map[string]*Function
+  tags *TagMap
 }
 
 // NewStructure returns new Instance of the structure type
 // with the provided parent and type spec.
-func NewStructure(parent *ast.StructType, spec *ast.TypeSpec) *Structure {
+func NewStructure(parent *ast.StructType, spec *ast.TypeSpec, tagMap *TagMap) *Structure {
 	return &Structure{
 		parent: parent,
 		spec: spec,
 		methods: make(map[string]*Function),
+    tags: tagMap,
 	}
 }
 
@@ -98,14 +100,17 @@ func (s *Structure) Methods() map[string]*Function {
 type Interface struct {
 	parent *ast.InterfaceType
 	spec *ast.TypeSpec
+
+  tags *TagMap
 }
 
 // NewInterface creates a new Interface type and returns
 // it with the provided parent and spec.
-func NewInterface(parent *ast.InterfaceType, spec *ast.TypeSpec) *Interface {
+func NewInterface(parent *ast.InterfaceType, spec *ast.TypeSpec, tagMap *TagMap) *Interface {
 	return &Interface{
 		parent: parent,
 		spec: spec,
+		tags: tagMap,
 	}
 }
 
@@ -114,14 +119,14 @@ func (i *Interface) Name()  string {
 	return i.spec.Name.Name
 }
 
-func ParseStruct(spec *ast.TypeSpec, parent *ast.StructType) *Structure {
-	s := NewStructure(parent, spec)
+func ParseStruct(spec *ast.TypeSpec, parent *ast.StructType, comments ast.CommentMap) *Structure {
+	s := NewStructure(parent, spec, ParseTags(comments))
 
 	return s
 }
 
-func ParseInterface(spec *ast.TypeSpec, parent *ast.InterfaceType) *Interface {
-	i := NewInterface(parent, spec)
+func ParseInterface(spec *ast.TypeSpec, parent *ast.InterfaceType, comments ast.CommentMap) *Interface {
+	i := NewInterface(parent, spec, ParseTags(comments))
 
 	return i
 }
