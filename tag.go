@@ -7,54 +7,70 @@ import (
   "regexp"
 )
 
-//
+// Tag holds information about one tag, its name
+// parameters and their values
 type Tag struct {
   Name    string //may be obsolete bc tags are indexed in tag map by their names
   Values  map[string]string
 }
 
+// NewTag will create and return an empty tag
 func NewTag() *Tag{
   return &Tag{
     Values: make(map[string]string),
   }
 }
 
+// TagMap  holds build tags
+// of one function/interface/structure etc
 type TagMap struct {
   tags map[string]*Tag
 }
 
+// NewTagMap will create and return an empty tag map
 func NewTagMap() *TagMap {
   return &TagMap{
     tags: make(map[string]*Tag),
   }
 }
 
+// HasTag will check if the map has a tag with
+// name given by parameter
 func (t *TagMap) HasTag(name string) bool {
   _, ok := t.tags[name]
   return ok
 }
 
+// GetTag will get a value of a tag with
+// key given by parameter
 func (t *TagMap) GetTag(name string) (*Tag, bool) {
   val, ok := t.tags[name]
   return val, ok
 }
 
+// SetTagValue will set a tag value to value
+// given by parameter
 func (t *TagMap) SetTagValue (name string, tag *Tag) {
   t.tags[name] = tag
 }
 
+// DeleteTag will delete a tag with name given
+// by parameter from the map
 func (t *TagMap) DeleteTag (name string) {
   delete(t.tags, name)
 }
 
+// NumOfTags will return number of tags in the map
 func (t *TagMap) NumOfTags () int {
   return len(t.tags)
 }
 
+// GetAllTags will return all tags in the map
 func (t *TagMap) GetAllTags () map[string]*Tag {
   return t.tags
 }
 
+// GetAllKeys will get names of all tags in the map
 func (t *TagMap) GetAllKeys () []string {
   keys := []string{}
   for key := range t.tags {
@@ -150,8 +166,8 @@ func parseValue(input string) (string, string, string) {
   return input[i:], name, value
 }
 
-
-
+// ParseTags will create a TagMap from comments given by
+// parameter
 func ParseTags (commentMap ast.CommentMap) *TagMap {
   tagMap := NewTagMap()
   for _, comment := range commentMap.Comments() {
