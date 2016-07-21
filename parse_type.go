@@ -95,6 +95,11 @@ func (s *Structure) Methods() map[string]*Function {
 	return s.methods
 }
 
+// Tags returns the tags of the function
+func (s *Structure) Tags() *TagMap {
+  return s.tags
+}
+
 // Interface represents the interface type of a
 // given build
 type Interface struct {
@@ -117,6 +122,11 @@ func NewInterface(parent *ast.InterfaceType, spec *ast.TypeSpec, tagMap *TagMap)
 // Name returns the name of the interface type
 func (i *Interface) Name()  string {
 	return i.spec.Name.Name
+}
+
+// Tags returns the tags of the function
+func (i *Interface) Tags() *TagMap {
+  return i.tags
 }
 
 func ParseStruct(spec *ast.TypeSpec, parent *ast.StructType, comments ast.CommentMap) *Structure {

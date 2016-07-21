@@ -48,9 +48,27 @@ func (f *File) Struct(name string) *Structure {
 	return f.structures[name]
 }
 
+// FilteredStructs is a type of map that can be filtered
+// by its tags.
+type FilteredStructs map[string]*Structure
+
+// Filter can be called on a map of structures
+// It will filter only those that have tag with name
+// given by parameter
+func (f FilteredStructs) Filter(name string) map[string]*Structure {
+  newMap := make(map[string]*Structure)
+  for it := range f {
+    if f[it].Tags().HasTag(name) {
+      newMap[it] = f[it]
+    }
+  }
+
+  return newMap
+}
+
 // Structs returns a map of structures contained
 // within the requested file
-func (f *File) Structs() map[string]*Structure {
+func (f *File) Structs() FilteredStructs {
 	return f.structures
 }
 
