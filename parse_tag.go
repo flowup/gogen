@@ -10,15 +10,66 @@ import (
 // Tag holds information about one tag, its name
 // parameters and their values
 type Tag struct {
-  Name    string //may be obsolete bc tags are indexed in tag map by their names
-  Values  map[string]string
+  name    string //may be obsolete bc tags are indexed in tag map by their names
+  values  map[string]string
 }
 
 // NewTag will create and return an empty tag
-func NewTag() *Tag{
+func NewTag(name string) *Tag{
   return &Tag{
-    Values: make(map[string]string),
+    name: name,
+    values: make(map[string]string),
   }
+}
+
+// GetName will return the name of a tag
+func (t *Tag) GetName () string {
+  return t.name
+}
+
+// HasParameter will return if a parameter with name
+// sent to function is a parameter of this tag
+func (t *Tag) Has (name string) bool {
+  _, ok := t.values[name]
+  return ok
+}
+
+// GetParameter will return the value of a parameter
+// along with bool value that determines if the parameter was found
+func (t *Tag) Get (name string) (string, bool) {
+  retVal, ok := t.values[name]
+  return retVal, ok
+}
+
+// SetParameterValue will set a value of a parameter.
+// Can be used for creating new parameters
+func (t *Tag) Set (name string, value string) {
+  t.values[name] = value
+}
+
+// DeleteParameter will delete a parameter from a tag
+func (t *Tag) Delete (name string) {
+  delete(t.values, name)
+}
+
+// NumOfParameters will return number of parameters of a tag
+func (t *Tag) Num () int {
+  return len(t.values)
+}
+
+// GetAllParameters will return all parameters of a tag with their values
+func (t *Tag) GetAll () map[string]string {
+  return t.values
+}
+
+// GetAllParameterNames
+func (t *Tag) GetParameterNames () []string {
+  keys := []string{}
+  for key := range t.values {
+    keys = append(keys, key)
+  }
+
+  return keys
 }
 
 // TagMap  holds build tags
@@ -36,42 +87,42 @@ func NewTagMap() *TagMap {
 
 // HasTag will check if the map has a tag with
 // name given by parameter
-func (t *TagMap) HasTag(name string) bool {
+func (t *TagMap) Has (name string) bool {
   _, ok := t.tags[name]
   return ok
 }
 
 // GetTag will get a value of a tag with
 // key given by parameter
-func (t *TagMap) GetTag(name string) (*Tag, bool) {
-  val, ok := t.tags[name]
-  return val, ok
+func (t *TagMap) Get (name string) (*Tag, bool) {
+  retVal, ok := t.tags[name]
+  return retVal, ok
 }
 
 // SetTagValue will set a tag value to value
 // given by parameter
-func (t *TagMap) SetTagValue (name string, tag *Tag) {
+func (t *TagMap) Set (name string, tag *Tag) {
   t.tags[name] = tag
 }
 
 // DeleteTag will delete a tag with name given
 // by parameter from the map
-func (t *TagMap) DeleteTag (name string) {
+func (t *TagMap) Delete (name string) {
   delete(t.tags, name)
 }
 
 // NumOfTags will return number of tags in the map
-func (t *TagMap) NumOfTags () int {
+func (t *TagMap) Num () int {
   return len(t.tags)
 }
 
 // GetAllTags will return all tags in the map
-func (t *TagMap) GetAllTags () map[string]*Tag {
+func (t *TagMap) GetAll () map[string]*Tag {
   return t.tags
 }
 
 // GetAllKeys will get names of all tags in the map
-func (t *TagMap) GetAllKeys () []string {
+func (t *TagMap) GetTagNames () []string {
   keys := []string{}
   for key := range t.tags {
     keys = append(keys, key)
@@ -134,7 +185,6 @@ func parseValue(input string) (string, string, string) {
   // check if delimiter of value of parameter is space or a " sign
   delimiter := ' '
   if input[i] == '"' {
-    value += "\""
     delimiter = '"'
     i++
   }
@@ -158,7 +208,6 @@ func parseValue(input string) (string, string, string) {
       value += string(input[i])
       i++
     }
-    value += string(input[i])
     i++
   }
 
@@ -181,8 +230,7 @@ func ParseTags (commentMap ast.CommentMap) *TagMap {
       line, tagName, _ := parseValue(line)
       // if there is a tag on the line read its parameters and their values
       if len(tagName) > 0 && tagName[0] == '@' {
-        tag := NewTag()
-        tag.Name = tagName
+        tag := NewTag(tagName)
         //fmt.Println("Tag Name:", tagName)
         // while there is some input check for parameters
         for line != "" {
@@ -190,11 +238,11 @@ func ParseTags (commentMap ast.CommentMap) *TagMap {
           line, parName, parVal = parseValue(line)
           if parName != "" {
             //fmt.Println("Parameter name:", parName, "Parameter value", parVal)
-            tag.Values[parName] = parVal
+            tag.Set(parName, parVal)
           }
         }
         // save tag to map
-        tagMap.SetTagValue(tagName, tag)
+        tagMap.Set(tagName, tag)
       }
     }
   }

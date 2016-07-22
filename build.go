@@ -58,7 +58,7 @@ type FilteredStructs map[string]*Structure
 func (f FilteredStructs) Filter(name string) map[string]*Structure {
   newMap := make(map[string]*Structure)
   for it := range f {
-    if f[it].Tags().HasTag(name) {
+    if f[it].Tags().Has(name) {
       newMap[it] = f[it]
     }
   }
@@ -101,7 +101,7 @@ type FilteredFunctions map[string]*Function
 func (f FilteredFunctions) Filter (name string) map[string]*Function {
   newMap := make(map[string]*Function)
   for it := range f {
-    if f[it].Tags().HasTag(name) {
+    if f[it].Tags().Has(name) {
       newMap[it] = f[it]
     }
   }
