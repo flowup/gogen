@@ -48,8 +48,8 @@ func (f *File) Struct(name string) *Structure {
 	return f.structures[name]
 }
 
-// FilteredStructs is a type of map that can be filtered
-// by its tags.
+// FilteredStructs is a type of map of structures
+// that can be filtered by its tags.
 type FilteredStructs map[string]*Structure
 
 // Filter can be called on a map of structures
@@ -96,8 +96,11 @@ func (f *File) Function(name string) *Function {
 	return f.functions[name]
 }
 
+// FilteredFunctions is a type of map of functions
+// that can be filtered by its tags.
 type FilteredFunctions map[string]*Function
 
+// Filter will filter a map of functions by their tags
 func (f FilteredFunctions) Filter (name string) map[string]*Function {
   newMap := make(map[string]*Function)
   for it := range f {

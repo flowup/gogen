@@ -2,6 +2,7 @@ package gogen
 
 import "go/ast"
 
+// These value are used in determining type of struct field
 const (
 	PrimitiveType = 0
 	SliceType = 1
@@ -129,12 +130,16 @@ func (i *Interface) Tags() *TagMap {
   return i.tags
 }
 
+// ParseStruct will create a structure
+// with parameters given and return it
 func ParseStruct(spec *ast.TypeSpec, parent *ast.StructType, comments ast.CommentMap) *Structure {
 	s := NewStructure(parent, spec, ParseTags(comments))
 
 	return s
 }
 
+// ParseInterface will create an interface
+// with parameters given and return it
 func ParseInterface(spec *ast.TypeSpec, parent *ast.InterfaceType, comments ast.CommentMap) *Interface {
 	i := NewInterface(parent, spec, ParseTags(comments))
 

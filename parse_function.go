@@ -2,6 +2,7 @@ package gogen
 
 import "go/ast"
 
+// Function represents a function of a given build
 type Function struct {
 	parent *ast.FuncDecl
 
@@ -23,6 +24,8 @@ func (f *Function) IsMethod() bool {
 	return f.parent.Recv != nil
 }
 
+// ParseFunction will create and return a structure
+// for a function in a build
 func ParseFunction(parent *ast.FuncDecl, comments ast.CommentMap) *Function {
 	return &Function{
 		parent: parent,

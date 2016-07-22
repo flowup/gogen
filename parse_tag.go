@@ -27,42 +27,42 @@ func (t *Tag) GetName () string {
   return t.name
 }
 
-// HasParameter will return if a parameter with name
+// Has will return if a parameter with name
 // sent to function is a parameter of this tag
 func (t *Tag) Has (name string) bool {
   _, ok := t.values[name]
   return ok
 }
 
-// GetParameter will return the value of a parameter
+// Get will return the value of a parameter
 // along with bool value that determines if the parameter was found
 func (t *Tag) Get (name string) (string, bool) {
   retVal, ok := t.values[name]
   return retVal, ok
 }
 
-// SetParameterValue will set a value of a parameter.
+// Set will set a value of a parameter.
 // Can be used for creating new parameters
 func (t *Tag) Set (name string, value string) {
   t.values[name] = value
 }
 
-// DeleteParameter will delete a parameter from a tag
+// Delete will delete a parameter from a tag
 func (t *Tag) Delete (name string) {
   delete(t.values, name)
 }
 
-// NumOfParameters will return number of parameters of a tag
+// Num will return number of parameters of a tag
 func (t *Tag) Num () int {
   return len(t.values)
 }
 
-// GetAllParameters will return all parameters of a tag with their values
+// GetAll will return all parameters of a tag with their values
 func (t *Tag) GetAll () map[string]string {
   return t.values
 }
 
-// GetAllParameterNames
+// GetParameterNames will return all parameter names.
 func (t *Tag) GetParameterNames () []string {
   keys := []string{}
   for key := range t.values {
@@ -85,43 +85,43 @@ func NewTagMap() *TagMap {
   }
 }
 
-// HasTag will check if the map has a tag with
+// Has will check if the map has a tag with
 // name given by parameter
 func (t *TagMap) Has (name string) bool {
   _, ok := t.tags[name]
   return ok
 }
 
-// GetTag will get a value of a tag with
+// Get will get a value of a tag with
 // key given by parameter
 func (t *TagMap) Get (name string) (*Tag, bool) {
   retVal, ok := t.tags[name]
   return retVal, ok
 }
 
-// SetTagValue will set a tag value to value
+// Set will set a tag value to value
 // given by parameter
 func (t *TagMap) Set (name string, tag *Tag) {
   t.tags[name] = tag
 }
 
-// DeleteTag will delete a tag with name given
+// Delete will delete a tag with name given
 // by parameter from the map
 func (t *TagMap) Delete (name string) {
   delete(t.tags, name)
 }
 
-// NumOfTags will return number of tags in the map
+// Num will return number of tags in the map
 func (t *TagMap) Num () int {
   return len(t.tags)
 }
 
-// GetAllTags will return all tags in the map
+// GetAll will return all tags in the map
 func (t *TagMap) GetAll () map[string]*Tag {
   return t.tags
 }
 
-// GetAllKeys will get names of all tags in the map
+// GetTagNames will get names of all tags in the map
 func (t *TagMap) GetTagNames () []string {
   keys := []string{}
   for key := range t.tags {
