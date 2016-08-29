@@ -5,8 +5,10 @@ import "go/ast"
 // These value are used in determining type of struct field
 const (
 	PrimitiveType = 0
-	SliceType = 1
-	MapType = 2
+	SliceType     = 1
+	MapType       = 2
+	StructType    = 3
+	SelectorType  = 4
 )
 
 // StructField encapsulates one field of the Structure
@@ -31,6 +33,9 @@ func (f *StructField) Type() (string, int) {
 		return t.Elt.(*ast.Ident).Name, SliceType
 	case *ast.MapType:
 		return "[" + t.Key.(*ast.Ident).Name + "]" + t.Value.(*ast.Ident).Name, MapType
+	// imported types
+	case *ast.SelectorExpr:
+		return t.X.(*ast.Ident).Name + "." + t.Sel.Name, SelectorType
 	default:
 		panic("StructField type not recognized! Please report this issue.")
 	}
@@ -40,21 +45,21 @@ func (f *StructField) Type() (string, int) {
 // given build
 type Structure struct {
 	parent *ast.StructType
-	spec *ast.TypeSpec
+	spec   *ast.TypeSpec
 
 	// map of methods
 	methods map[string]*Function
-  tags *TagMap
+	tags    *TagMap
 }
 
 // NewStructure returns new Instance of the structure type
 // with the provided parent and type spec.
 func NewStructure(parent *ast.StructType, spec *ast.TypeSpec, tagMap *TagMap) *Structure {
 	return &Structure{
-		parent: parent,
-		spec: spec,
+		parent:  parent,
+		spec:    spec,
 		methods: make(map[string]*Function),
-    tags: tagMap,
+		tags:    tagMap,
 	}
 }
 
@@ -98,16 +103,16 @@ func (s *Structure) Methods() map[string]*Function {
 
 // Tags returns the tags of the function
 func (s *Structure) Tags() *TagMap {
-  return s.tags
+	return s.tags
 }
 
 // Interface represents the interface type of a
 // given build
 type Interface struct {
 	parent *ast.InterfaceType
-	spec *ast.TypeSpec
+	spec   *ast.TypeSpec
 
-  tags *TagMap
+	tags *TagMap
 }
 
 // NewInterface creates a new Interface type and returns
@@ -115,19 +120,19 @@ type Interface struct {
 func NewInterface(parent *ast.InterfaceType, spec *ast.TypeSpec, tagMap *TagMap) *Interface {
 	return &Interface{
 		parent: parent,
-		spec: spec,
-		tags: tagMap,
+		spec:   spec,
+		tags:   tagMap,
 	}
 }
 
 // Name returns the name of the interface type
-func (i *Interface) Name()  string {
+func (i *Interface) Name() string {
 	return i.spec.Name.Name
 }
 
 // Tags returns the tags of the function
 func (i *Interface) Tags() *TagMap {
-  return i.tags
+	return i.tags
 }
 
 // ParseStruct will create a structure

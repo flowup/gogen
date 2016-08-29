@@ -1,19 +1,21 @@
 package gogen
 
 import (
-	"github.com/stretchr/testify/suite"
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"path/filepath"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
 const (
-	SimpleFilePath = "test_fixtures/simple.go"
-	SimpleDirPath = "test_fixtures/dir"
+	SimpleFilePath  = "test_fixtures/simple.go"
+	ComplexFilePath = "test_fixtures/complex.go"
+	SimpleDirPath   = "test_fixtures/dir"
 )
 
 var (
-	SimpleDirFiles = [...]string{"1.go", "2.go"}
+	SimpleDirFiles    = [...]string{"1.go", "2.go"}
 	SimpleDirPackages = [...]string{"dir", "dir"}
 )
 
