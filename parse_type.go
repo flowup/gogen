@@ -1,6 +1,8 @@
 package gogen
 
-import "go/ast"
+import (
+  "go/ast"
+)
 
 // These value are used in determining type of struct field
 const (
@@ -9,11 +11,12 @@ const (
 	MapType       = 2
 	StructType    = 3
 	SelectorType  = 4
+  Unrecognized  = 5
 )
 
 // StructField encapsulates one field of the Structure
 type StructField struct {
-	parent *ast.Field
+  parent *ast.Field
 
 	name string
 }
@@ -44,7 +47,7 @@ func (f *StructField) Type() (string, int) {
 // Structure represents the struct type of a
 // given build
 type Structure struct {
-	parent *ast.StructType
+  parent *ast.StructType
 	spec   *ast.TypeSpec
 
 	// map of methods
@@ -63,9 +66,14 @@ func NewStructure(parent *ast.StructType, spec *ast.TypeSpec, tagMap *TagMap) *S
 	}
 }
 
+// Tags will return a map of tags of a structure
+func (s *Structure) Tags() *TagMap {
+  return s.tags
+}
+
 // Name returns the name of the given structure
 func (s *Structure) Name() string {
-	return s.spec.Name.Name
+  return s.spec.Name.Name
 }
 
 // Fields returns fields that are associated with the
@@ -75,13 +83,13 @@ func (s *Structure) Name() string {
 func (s *Structure) Fields() []*StructField {
 	fields := []*StructField{}
 
-	for _, field := range s.parent.Fields.List {
-		for _, fieldName := range field.Names {
-			fields = append(fields, &StructField{
-				field, fieldName.Name,
-			})
-		}
-	}
+  for _, field := range s.parent.Fields.List {
+    for _, fieldName := range field.Names {
+      fields = append(fields, &StructField{
+        field, fieldName.Name,
+      })
+    }
+  }
 
 	return fields
 }
@@ -101,11 +109,52 @@ func (s *Structure) Methods() map[string]*Function {
 	return s.methods
 }
 
-// Tags returns the tags of the function
-func (s *Structure) Tags() *TagMap {
-	return s.tags
+// Constant is a structure for a constant in Go program
+type Constant struct {
+  parent *ast.ValueSpec
+
+	tags *TagMap
 }
 
+// NewConstant is a factory method for constants
+func NewConstant(parent *ast.ValueSpec, tagMap *TagMap) *Constant {
+  return &Constant{
+    parent: parent,
+    tags: tagMap,
+  }
+}
+
+// Name will return a name of a constant
+func (c *Constant) Name() string {
+  return c.parent.Names[0].Name
+}
+
+// Tags will return a tag map of a constant
+func (c *Constant) Tags() *TagMap {
+	return c.tags
+}
+
+// Value will return a sting representation of a value of a constant
+func (c *Constant) Value() string{
+  return c.parent.Values[0].(*ast.BasicLit).Value
+}
+
+// Type will return a type of a constant
+func (c *Constant) Type() (string, int) {
+  switch t := c.parent.Type.(type) {
+  case *ast.Ident:
+    return t.Name, PrimitiveType
+  case *ast.ArrayType:
+    return t.Elt.(*ast.Ident).Name, SliceType
+  case *ast.MapType:
+    return "[" + t.Key.(*ast.Ident).Name + "]" + t.Value.(*ast.Ident).Name, MapType
+  // imported types
+  case *ast.SelectorExpr:
+    return t.X.(*ast.Ident).Name + "." + t.Sel.Name, SelectorType
+  default:
+    return "unrecognized", Unrecognized
+  }
+}
 // Interface represents the interface type of a
 // given build
 type Interface struct {
@@ -130,7 +179,7 @@ func (i *Interface) Name() string {
 	return i.spec.Name.Name
 }
 
-// Tags returns the tags of the function
+// Tags returns the tags of the interface
 func (i *Interface) Tags() *TagMap {
 	return i.tags
 }
@@ -149,4 +198,12 @@ func ParseInterface(spec *ast.TypeSpec, parent *ast.InterfaceType, comments ast.
 	i := NewInterface(parent, spec, ParseTags(comments))
 
 	return i
+}
+
+// ParseConstant will create a constant
+// with parameters given and return it
+func ParseConstant(parent *ast.ValueSpec, comments ast.CommentMap) *Constant {
+	c := NewConstant(parent, ParseTags(comments))
+
+	return c
 }

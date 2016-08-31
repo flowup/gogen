@@ -10,6 +10,7 @@ type File struct {
 	structures map[string]*Structure
 	interfaces map[string]*Interface
 	functions map[string]*Function
+	constants map[string]*Constant
 }
 
 // NewFile creates a new File instance with provided
@@ -21,6 +22,7 @@ func NewFile(name string, parent *ast.File) *File {
 		structures: make(map[string]*Structure),
 		interfaces: make(map[string]*Interface),
 		functions: make(map[string]*Function),
+    constants: make(map[string]*Constant),
 	}
 }
 
@@ -94,6 +96,22 @@ func (f *File) AddFunction(fun *Function) {
 // function is found, this will return nil
 func (f *File) Function(name string) *Function {
 	return f.functions[name]
+}
+
+// AddConstant will add a constant to map of constants.
+func (f *File) AddConstant(c *Constant) {
+	f.constants[c.Name()] = c
+}
+
+// Constant will return a constant by it's name. If no
+// constant is found, this will return nil
+func (f *File) Constant(name string) *Constant{
+	return f.constants[name]
+}
+
+// Constants will return full map of constants
+func (f *File) Constants() map[string]*Constant{
+	return f.constants
 }
 
 // FilteredFunctions is a type of map of functions

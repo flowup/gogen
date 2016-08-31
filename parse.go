@@ -93,7 +93,7 @@ func ParseFileAST(name string, tree *ast.File, commentMap ast.CommentMap) (*File
 				case *ast.ImportSpec:
 					// just ignore for now
 				case *ast.ValueSpec:
-					// just ignore for now
+					f.AddConstant(ParseConstant(specValue, commentMap.Filter(declaration)))
 				default:
 					fmt.Println("Generic value not recognized: ", specValue)
 				}

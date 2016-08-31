@@ -2,6 +2,10 @@ package fixture
 
 import "math"
 
+// @pi
+const Pi = 3.14
+const qwer = "qwer"
+
 // @dao --asdf "val poi" --qwer 654
 // @test -r="q w e r"
 type X struct {
