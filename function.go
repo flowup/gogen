@@ -4,19 +4,8 @@ import "go/ast"
 
 // Function represents a function of a given build
 type Function struct {
+	BaseType
 	parent *ast.FuncDecl
-
-	tags *TagMap
-}
-
-// Name returns the name of the function
-func (f *Function) Name() string {
-	return f.parent.Name.Name
-}
-
-// Tags returns the tags of the function
-func (f *Function) Tags() *TagMap {
-  return f.tags
 }
 
 // IsMethod returns true if the function has receiver
@@ -27,8 +16,10 @@ func (f *Function) IsMethod() bool {
 // ParseFunction will create and return a structure
 // for a function in a build
 func ParseFunction(parent *ast.FuncDecl, comments ast.CommentMap) *Function {
-	return &Function{
+	f := &Function{
 		parent: parent,
-		tags: ParseTags(comments),
 	}
+	f.name = parent.Name
+	f.tags = ParseTags(comments)
+	return f
 }
