@@ -11,13 +11,15 @@ type Structure struct {
   parent *ast.StructType
 	spec   *ast.TypeSpec
 
+  // slice of fields
+  fields []*StructField
 	// map of methods
 	methods map[string]*Function
 }
 
 // NewStructure returns new Instance of the structure type
 // with the provided parent and type spec.
-func NewStructure(parent *ast.StructType, spec *ast.TypeSpec, tagMap *TagMap) *Structure {
+func NewStructure(parent *ast.StructType, spec *ast.TypeSpec, fList []*StructField, tagMap *TagMap) *Structure {
 	s := &Structure{
     BaseType: BaseType{
       name: spec.Name,
@@ -25,6 +27,7 @@ func NewStructure(parent *ast.StructType, spec *ast.TypeSpec, tagMap *TagMap) *S
     },
     parent : parent,
     spec: spec,
+    fields: fList,
     methods: make(map[string]*Function),
   }
 
@@ -32,27 +35,9 @@ func NewStructure(parent *ast.StructType, spec *ast.TypeSpec, tagMap *TagMap) *S
 }
 
 // Fields returns fields that are associated with the
-// given Structure. Note that this function builds
-// the field list every time it is called, so cache
-// the results to improve the performance.
+// given Structure.
 func (s *Structure) Fields() []*StructField {
-	fields := []*StructField{}
-
-  for _, field := range s.parent.Fields.List {
-    for _, fieldName := range field.Names {
-      newField := &StructField{
-        BaseType: BaseType{
-          name: fieldName,
-          tags: nil,
-        },
-        parent:field,
-      }
-
-      fields = append(fields, newField)
-    }
-  }
-
-	return fields
+	return s.fields
 }
 
 // AddMethod binds a method into the current structure
@@ -73,7 +58,12 @@ func (s *Structure) Methods() map[string]*Function {
 // ParseStruct will create a structure
 // with parameters given and return it
 func ParseStruct(spec *ast.TypeSpec, parent *ast.StructType, comments ast.CommentMap) *Structure {
-	s := NewStructure(parent, spec, ParseTags(comments))
+  var fList []*StructField
+  for _, field := range parent.Fields.List {
+    fList = append(fList, ParseStructField(field, comments.Filter(field)))
+  }
+
+  s := NewStructure(parent, spec, fList, ParseTags(comments))
 
 	return s
 }

@@ -21,6 +21,16 @@ type StructField struct {
   parent *ast.Field
 }
 
+func NewStructField(parent *ast.Field, tags *TagMap) *StructField {
+  return &StructField{
+    BaseType: BaseType{
+      name: parent.Names[0],
+      tags: tags,
+    },
+    parent: parent,
+  }
+}
+
 // Type returns type of the field as a string and
 // FieldType such as Slice, Map or Primitive
 func (f *StructField) Type() (string, int) {
@@ -37,4 +47,10 @@ func (f *StructField) Type() (string, int) {
   default:
     panic("StructField type not recognized! Please report this issue.")
   }
+}
+
+func ParseStructField(parent *ast.Field, comments ast.CommentMap) *StructField {
+  sf := NewStructField(parent, ParseTags(comments))
+
+  return sf
 }
