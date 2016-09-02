@@ -34,8 +34,12 @@ func NewStructure(parent *ast.StructType, spec *ast.TypeSpec, fMap map[string]*S
   return s
 }
 
+// FilteredStructFields is a map of struct fields
+// that can be filtered by their tags
 type FilteredStructFields map[string]*StructField
 
+// Filter will filter struct fields map and return
+// all those that have tag with name given by parameter
 func(f FilteredStructFields) Filter(name string) map[string]*StructField {
   newMap := make(map[string]*StructField)
   for it := range f {
@@ -49,7 +53,7 @@ func(f FilteredStructFields) Filter(name string) map[string]*StructField {
 
 // Fields returns fields that are associated with the
 // given Structure.
-func (s *Structure) Fields() map[string]*StructField {
+func (s *Structure) Fields() FilteredStructFields {
 	return s.fields
 }
 

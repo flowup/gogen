@@ -110,12 +110,15 @@ func (f *File) Constant(name string) *Constant{
 }
 
 // Constants will return full map of constants
-func (f *File) Constants() map[string]*Constant{
+func (f *File) Constants() FilteredConstants{
 	return f.constants
 }
 
+// FilteredConstants is a type of map of constants
+// that can be filtered by its tags.
 type FilteredConstants map[string]*Constant
 
+// Filter will filter a map of constants by their tags.
 func (f FilteredConstants) Filter (name string) map[string]*Constant {
 	newMap := make(map[string]*Constant)
 	for it := range f {
@@ -145,7 +148,7 @@ func (f FilteredFunctions) Filter (name string) map[string]*Function {
 
 // Functions will return a full map of functions provided
 // by the file
-func (f *File) Functions() map[string]*Function {
+func (f *File) Functions() FilteredFunctions {
 	return f.functions
 }
 

@@ -5,6 +5,7 @@ import (
   "go/token"
 )
 
+// These constants are returned from Type() function
 const (
   IntType       = 1024
   FloatType     = 1025

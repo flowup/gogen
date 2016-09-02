@@ -21,6 +21,8 @@ type StructField struct {
   parent *ast.Field
 }
 
+// NewStructField will return a new struct field with
+// given parent and tag map
 func NewStructField(parent *ast.Field, tags *TagMap) *StructField {
   return &StructField{
     BaseType: BaseType{
@@ -49,6 +51,8 @@ func (f *StructField) Type() (string, int) {
   }
 }
 
+// ParseStructField will create a struct field
+// with given parameters and return it
 func ParseStructField(parent *ast.Field, comments ast.CommentMap) *StructField {
   sf := NewStructField(parent, ParseTags(comments))
 
