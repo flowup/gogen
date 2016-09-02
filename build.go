@@ -114,6 +114,19 @@ func (f *File) Constants() map[string]*Constant{
 	return f.constants
 }
 
+type FilteredConstants map[string]*Constant
+
+func (f FilteredConstants) Filter (name string) map[string]*Constant {
+	newMap := make(map[string]*Constant)
+	for it := range f {
+		if f[it].Tags().Has(name) {
+			newMap[it] = f[it]
+		}
+	}
+
+	return newMap
+}
+
 // FilteredFunctions is a type of map of functions
 // that can be filtered by its tags.
 type FilteredFunctions map[string]*Function

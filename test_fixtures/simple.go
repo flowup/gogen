@@ -1,6 +1,9 @@
 package fixture
 
-import "math"
+import (
+	"math"
+	"github.com/jinzhu/gorm"
+)
 
 // @pi
 const Pi = 3.14
@@ -9,6 +12,7 @@ const StringConstant = "qwer"
 // @dao --asdf "val poi" --qwer 654
 // @test -r="q w e r"
 type X struct {
+	gorm.Model
 	Val int // @field
 	SliceVal []string
 	MapVal map[string]int

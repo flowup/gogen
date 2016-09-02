@@ -12,14 +12,14 @@ type Structure struct {
 	spec   *ast.TypeSpec
 
   // slice of fields
-  fields []*StructField
+  fields map[string]*StructField
 	// map of methods
 	methods map[string]*Function
 }
 
 // NewStructure returns new Instance of the structure type
 // with the provided parent and type spec.
-func NewStructure(parent *ast.StructType, spec *ast.TypeSpec, fList []*StructField, tagMap *TagMap) *Structure {
+func NewStructure(parent *ast.StructType, spec *ast.TypeSpec, fMap map[string]*StructField, tagMap *TagMap) *Structure {
 	s := &Structure{
     BaseType: BaseType{
       name: spec.Name,
@@ -27,16 +27,29 @@ func NewStructure(parent *ast.StructType, spec *ast.TypeSpec, fList []*StructFie
     },
     parent : parent,
     spec: spec,
-    fields: fList,
+    fields: fMap,
     methods: make(map[string]*Function),
   }
 
   return s
 }
 
+type FilteredStructFields map[string]*StructField
+
+func(f FilteredStructFields) Filter(name string) map[string]*StructField {
+  newMap := make(map[string]*StructField)
+  for it := range f {
+    if f[it].Tags().Has(name) {
+      newMap[it] = f[it]
+    }
+  }
+
+  return newMap
+}
+
 // Fields returns fields that are associated with the
 // given Structure.
-func (s *Structure) Fields() []*StructField {
+func (s *Structure) Fields() map[string]*StructField {
 	return s.fields
 }
 
@@ -58,12 +71,15 @@ func (s *Structure) Methods() map[string]*Function {
 // ParseStruct will create a structure
 // with parameters given and return it
 func ParseStruct(spec *ast.TypeSpec, parent *ast.StructType, comments ast.CommentMap) *Structure {
-  var fList []*StructField
+  fMap := make(map[string]*StructField)
   for _, field := range parent.Fields.List {
-    fList = append(fList, ParseStructField(field, comments.Filter(field)))
+    if len(field.Names) == 0 {
+      continue
+    }
+    fMap[field.Names[0].Name] = ParseStructField(field, comments.Filter(field))
   }
 
-  s := NewStructure(parent, spec, fList, ParseTags(comments))
+  s := NewStructure(parent, spec, fMap, ParseTags(comments))
 
 	return s
 }
