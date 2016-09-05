@@ -2,8 +2,7 @@ package fixture
 
 import (
 	"math"
-	"github.com/jinzhu/gorm"
-	"time"
+	"text/scanner"
 )
 
 // @pi
@@ -13,11 +12,9 @@ const StringConstant = "qwer"
 // @dao --asdf "val poi" --qwer 654
 // @test -r="q w e r"
 type X struct {
-	gorm.Model
 	Val int // @field
 	SliceVal []string
 	MapVal map[string]int
-	Time time.Time
 }
 
 // @func --name add

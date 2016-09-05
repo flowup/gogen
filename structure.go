@@ -22,7 +22,7 @@ type Structure struct {
 func NewStructure(parent *ast.StructType, spec *ast.TypeSpec, fMap map[string]*StructField, tagMap *TagMap) *Structure {
 	s := &Structure{
     BaseType: BaseType{
-      name: spec.Name,
+      name: spec.Name.Name,
       tags: tagMap,
     },
     parent : parent,

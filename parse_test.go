@@ -31,19 +31,19 @@ func (s *ParseSuite) TestParseFile() {
 	assert.NotEqual(s.T(), (*Build)(nil), build)
 	// there should be only one file, as only one was
 	// parsed by the build
-	assert.Equal(s.T(), 1, len(build.Files))
-	assert.NotEqual(s.T(), nil, build.Files[fileName])
+	assert.Equal(s.T(), 1, len(build.Files()))
+	assert.NotEqual(s.T(), nil, build.File(fileName))
 }
 
 func (s *ParseSuite) TestParseDir() {
 	build, err := ParseDir(SimpleDirPath)
 	assert.Equal(s.T(), nil, err)
 	assert.NotEqual(s.T(), (*Build)(nil), build)
-	assert.Equal(s.T(), len(SimpleDirFiles), len(build.Files))
+	assert.Equal(s.T(), len(SimpleDirFiles), len(build.Files()))
 
 	for i, name := range SimpleDirFiles {
-		assert.NotEqual(s.T(), (*File)(nil), build.Files[name])
-		assert.Equal(s.T(), SimpleDirPackages[i], build.Files[name].Package())
+		assert.NotEqual(s.T(), (*File)(nil), build.File(name))
+		assert.Equal(s.T(), SimpleDirPackages[i], build.File(name).Package())
 	}
 }
 

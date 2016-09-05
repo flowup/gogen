@@ -25,7 +25,7 @@ func (s *ParseTypeSuite) SetupTest() {
 	var err error
 	s.build, err = ParseFile(SimpleFilePath)
 	assert.Equal(s.T(), nil, err)
-	s.file = s.build.Files[filepath.Base(SimpleFilePath)]
+	s.file = s.build.File(filepath.Base(SimpleFilePath))
 
 	s.st = s.file.Struct("X")
 	assert.NotEqual(s.T(), (*Structure)(nil), s.st)
@@ -35,7 +35,7 @@ func (s *ParseTypeSuite) SetupTest() {
 
 	s.complexBuild, err = ParseFile(ComplexFilePath)
 	assert.Equal(s.T(), nil, err)
-	s.complexFile = s.complexBuild.Files[filepath.Base(ComplexFilePath)]
+	s.complexFile = s.complexBuild.File(filepath.Base(ComplexFilePath))
 	assert.NotEqual(s.T(), (*File)(nil), s.complexFile)
 }
 
@@ -54,25 +54,22 @@ func (s *ParseTypeSuite) TestParseInterface() {
 func (s *ParseTypeSuite) TestStructureFields() {
 	assert.Equal(s.T(), 3, len(s.st.Fields()))
 
-	assert.Equal(s.T(), "Val", s.st.Fields()[0].Name())
-	intType, intSubType := s.st.Fields()[0].Type()
+	intType, intSubType := s.st.Fields()["Val"].Type()
 	assert.Equal(s.T(), "int", intType)
 	assert.Equal(s.T(), PrimitiveType, intSubType)
 
-	assert.Equal(s.T(), "SliceVal", s.st.Fields()[1].Name())
-	sliceType, sliceSubtype := s.st.Fields()[1].Type()
+	sliceType, sliceSubtype := s.st.Fields()["SliceVal"].Type()
 	assert.Equal(s.T(), "string", sliceType)
 	assert.Equal(s.T(), SliceType, sliceSubtype)
 
-	assert.Equal(s.T(), "MapVal", s.st.Fields()[2].Name())
-	mapType, mapSubtype := s.st.Fields()[2].Type()
+	mapType, mapSubtype := s.st.Fields()["MapVal"].Type()
 	assert.Equal(s.T(), "[string]int", mapType)
 	assert.Equal(s.T(), MapType, mapSubtype)
 }
 
 func (s *ParseTypeSuite) TestStructureComplexFields() {
 	str := s.complexFile.Struct("MyStruct")
-	fType, _ := str.Fields()[0].Type()
+	fType, _ := str.Fields()["MyTime"].Type()
 	assert.Equal(s.T(), "time.Time", fType)
 }
 

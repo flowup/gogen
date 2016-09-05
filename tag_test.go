@@ -22,7 +22,7 @@ func (s *ParseTagsSuite) SetupTest() {
   var err error
   s.build, err = ParseFile(SimpleFilePath)
   assert.Equal(s.T(), nil, err)
-  s.file = s.build.Files[filepath.Base(SimpleFilePath)]
+  s.file = s.build.File(filepath.Base(SimpleFilePath))
 
   s.st = s.file.Struct("X")
   assert.NotEqual(s.T(), (*Structure)(nil), s.st)

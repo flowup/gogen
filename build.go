@@ -6,6 +6,10 @@ import "go/ast"
 type File struct {
 	name string // name of the file
 	parent *ast.File
+
+	// imports
+	imports map[string]*Import
+
 	// types
 	structures map[string]*Structure
 	interfaces map[string]*Interface
@@ -23,6 +27,7 @@ func NewFile(name string, parent *ast.File) *File {
 		interfaces: make(map[string]*Interface),
 		functions: make(map[string]*Function),
     constants: make(map[string]*Constant),
+		imports: make(map[string]*Import),
 	}
 }
 
@@ -36,6 +41,21 @@ func (f *File) Name() string {
 // referenced by the file
 func (f *File) Package() string {
 	return f.parent.Name.Name
+}
+
+// AddImport adds passed import to imports in the file
+func (f *File) AddImport(i *Import) {
+	f.imports[i.Name()] = i
+}
+
+// Import will return an import with given name
+// or nil if file does not contain such import
+func (f *File) Import(name string) *Import{
+	return f.imports[name]
+}
+
+func (f *File) Imports() map[string]*Import {
+	return f.imports
 }
 
 // AddStruct adds passed structure type into the

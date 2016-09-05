@@ -16,7 +16,7 @@ type Interface struct {
 func NewInterface(parent *ast.InterfaceType, spec *ast.TypeSpec, tagMap *TagMap) *Interface {
   i := &Interface{
     BaseType: BaseType{
-      name: spec.Name,
+      name: spec.Name.Name,
       tags: tagMap,
     },
     parent: parent,

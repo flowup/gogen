@@ -75,6 +75,10 @@ func ParseFile(path string) (*Build, error) {
 func ParseFileAST(name string, tree *ast.File, commentMap ast.CommentMap) (*File, error) {
 	f := NewFile(name, tree)
 
+	for _, i := range tree.Imports {
+		f.AddImport(ParseImport(i, commentMap.Filter(i)))
+	}
+
 	for _, declaration := range tree.Decls {
 		switch decValue := declaration.(type) {
 		// catch only generic declarations

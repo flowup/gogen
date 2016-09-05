@@ -23,7 +23,7 @@ type Constant struct {
 func NewConstant(parent *ast.ValueSpec, tagMap *TagMap) *Constant {
   c := &Constant{
     BaseType: BaseType{
-      name: parent.Names[0],
+      name: parent.Names[0].Name,
       tags: tagMap,
     },
     parent: parent,

@@ -26,7 +26,7 @@ type StructField struct {
 func NewStructField(parent *ast.Field, tags *TagMap) *StructField {
   return &StructField{
     BaseType: BaseType{
-      name: parent.Names[0],
+      name: parent.Names[0].Name,
       tags: tags,
     },
     parent: parent,

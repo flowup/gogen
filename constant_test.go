@@ -16,7 +16,7 @@ type ConstantSuite struct{
 func (s *ConstantSuite) SetupTest() {
   build, err := ParseFile(SimpleFilePath)
   assert.Nil(s.T(), err)
-  s.file = build.Files[filepath.Base(SimpleFilePath)]
+  s.file = build.File(filepath.Base(SimpleFilePath))
   assert.NotNil(s.T(), s.file)
 }
 
