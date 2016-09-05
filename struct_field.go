@@ -38,6 +38,9 @@ func NewStructField(parent *ast.Field, tags *TagMap) *StructField {
 func (f *StructField) Type() (string, int) {
   switch t := f.parent.Type.(type) {
   case *ast.Ident:
+    if t.Obj != nil {
+      return t.Name, StructType
+    }
     return t.Name, PrimitiveType
   case *ast.ArrayType:
     return t.Elt.(*ast.Ident).Name, SliceType

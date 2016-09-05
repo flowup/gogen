@@ -155,19 +155,29 @@ func (f *File) Functions() FilteredFunctions {
 // Build is an entity that holds the file map. It can be
 // dynamically adjusted (files can be added or removed).
 type Build struct {
-	Files map[string]*File;
+	files map[string]*File;
+}
+
+// Files will return all files contained in a build
+func (b *Build) Files() map[string]*File {
+	return b.files
+}
+
+// File will return a file in a build by its name
+func (b *Build) File(name string) *File{
+	return b.files[name]
 }
 
 // NewBuild creates a new Build object that encapsulates
 // files being processed in the build.
 func NewBuild() *Build {
 	return &Build{
-		Files: make(map[string]*File),
+		files: make(map[string]*File),
 	}
 }
 
 // AddFile adds a file with the given name and File reference
 // into an existing map of files.
 func (b *Build) AddFile(name string, f *File) {
-	b.Files[name] = f
+	b.files[name] = f
 }

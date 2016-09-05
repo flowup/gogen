@@ -3,6 +3,7 @@ package fixture
 import (
 	"math"
 	"github.com/jinzhu/gorm"
+	"time"
 )
 
 // @pi
@@ -16,6 +17,7 @@ type X struct {
 	Val int // @field
 	SliceVal []string
 	MapVal map[string]int
+	Time time.Time
 }
 
 // @func --name add
