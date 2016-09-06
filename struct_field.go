@@ -11,7 +11,7 @@ const (
   StructType    = 3
   SelectorType  = 4
   Unrecognized  = 5
-
+  PointerType   = 6
 )
 
 // StructField encapsulates one field of the Structure
@@ -49,6 +49,12 @@ func (f *StructField) Type() (string, int) {
   // imported types
   case *ast.SelectorExpr:
     return t.X.(*ast.Ident).Name + "." + t.Sel.Name, SelectorType
+  case *ast.StarExpr:
+    name := ""
+    if ident := t.X.(*ast.Ident); ident != nil {
+      name = ident.Name
+    }
+    return name, PointerType
   default:
     panic("StructField type not recognized! Please report this issue.")
   }
