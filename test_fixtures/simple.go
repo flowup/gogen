@@ -2,7 +2,6 @@ package fixture
 
 import (
 	"math"
-	"text/scanner"
 )
 
 // @pi
