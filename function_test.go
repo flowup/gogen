@@ -19,7 +19,7 @@ func (s *ParseFunctionSuite) SetupTest() {
 	s.build, err = ParseFile(SimpleFilePath)
 	assert.Equal(s.T(), nil, err)
 	assert.NotEqual(s.T(), (*Build)(nil), s.build)
-	s.file = s.build.Files[filepath.Base(SimpleFilePath)]
+	s.file = s.build.File(filepath.Base(SimpleFilePath))
 }
 
 func (s *ParseFunctionSuite) TestParseFunction() {

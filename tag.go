@@ -224,7 +224,7 @@ func ParseTags (commentMap ast.CommentMap) *TagMap {
     lines := strings.Split(comment.Text(), "\n")
     for _, line := range lines {
       // if line does not match this regexp made by Miro do not read tags from line
-      if !regexp.MustCompile("(?:--(\\w{2,})|-(\\w))\\s*(?:\"([^\"]*)\"|(\\w+)|())\\s*").Match([]byte(line)) {
+      if !regexp.MustCompile(`(\@\S+)(:? ([\S]+))*`).Match([]byte(line)) {
         continue
       }
       line, tagName, _ := parseValue(line)

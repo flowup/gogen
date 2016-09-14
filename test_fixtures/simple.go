@@ -1,11 +1,17 @@
 package fixture
 
-import "math"
+import (
+	"math"
+)
+
+// @pi
+const Pi = 3.14
+const StringConstant = "qwer"
 
 // @dao --asdf "val poi" --qwer 654
 // @test -r="q w e r"
 type X struct {
-	Val int
+	Val int // @field
 	SliceVal []string
 	MapVal map[string]int
 }

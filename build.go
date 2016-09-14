@@ -6,10 +6,15 @@ import "go/ast"
 type File struct {
 	name string // name of the file
 	parent *ast.File
+
+	// imports
+	imports map[string]*Import
+
 	// types
 	structures map[string]*Structure
 	interfaces map[string]*Interface
 	functions map[string]*Function
+	constants map[string]*Constant
 }
 
 // NewFile creates a new File instance with provided
@@ -21,6 +26,8 @@ func NewFile(name string, parent *ast.File) *File {
 		structures: make(map[string]*Structure),
 		interfaces: make(map[string]*Interface),
 		functions: make(map[string]*Function),
+    constants: make(map[string]*Constant),
+		imports: make(map[string]*Import),
 	}
 }
 
@@ -34,6 +41,21 @@ func (f *File) Name() string {
 // referenced by the file
 func (f *File) Package() string {
 	return f.parent.Name.Name
+}
+
+// AddImport adds passed import to imports in the file
+func (f *File) AddImport(i *Import) {
+	f.imports[i.Name()] = i
+}
+
+// Import will return an import with given name
+// or nil if file does not contain such import
+func (f *File) Import(name string) *Import{
+	return f.imports[name]
+}
+
+func (f *File) Imports() map[string]*Import {
+	return f.imports
 }
 
 // AddStruct adds passed structure type into the
@@ -96,6 +118,38 @@ func (f *File) Function(name string) *Function {
 	return f.functions[name]
 }
 
+// AddConstant will add a constant to map of constants.
+func (f *File) AddConstant(c *Constant) {
+	f.constants[c.Name()] = c
+}
+
+// Constant will return a constant by it's name. If no
+// constant is found, this will return nil
+func (f *File) Constant(name string) *Constant{
+	return f.constants[name]
+}
+
+// Constants will return full map of constants
+func (f *File) Constants() FilteredConstants{
+	return f.constants
+}
+
+// FilteredConstants is a type of map of constants
+// that can be filtered by its tags.
+type FilteredConstants map[string]*Constant
+
+// Filter will filter a map of constants by their tags.
+func (f FilteredConstants) Filter (name string) map[string]*Constant {
+	newMap := make(map[string]*Constant)
+	for it := range f {
+		if f[it].Tags().Has(name) {
+			newMap[it] = f[it]
+		}
+	}
+
+	return newMap
+}
+
 // FilteredFunctions is a type of map of functions
 // that can be filtered by its tags.
 type FilteredFunctions map[string]*Function
@@ -114,26 +168,36 @@ func (f FilteredFunctions) Filter (name string) map[string]*Function {
 
 // Functions will return a full map of functions provided
 // by the file
-func (f *File) Functions() map[string]*Function {
+func (f *File) Functions() FilteredFunctions {
 	return f.functions
 }
 
 // Build is an entity that holds the file map. It can be
 // dynamically adjusted (files can be added or removed).
 type Build struct {
-	Files map[string]*File;
+	files map[string]*File;
+}
+
+// Files will return all files contained in a build
+func (b *Build) Files() map[string]*File {
+	return b.files
+}
+
+// File will return a file in a build by its name
+func (b *Build) File(name string) *File{
+	return b.files[name]
 }
 
 // NewBuild creates a new Build object that encapsulates
 // files being processed in the build.
 func NewBuild() *Build {
 	return &Build{
-		Files: make(map[string]*File),
+		files: make(map[string]*File),
 	}
 }
 
 // AddFile adds a file with the given name and File reference
 // into an existing map of files.
 func (b *Build) AddFile(name string, f *File) {
-	b.Files[name] = f
+	b.files[name] = f
 }

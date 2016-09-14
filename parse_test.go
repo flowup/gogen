@@ -1,19 +1,21 @@
 package gogen
 
 import (
-	"github.com/stretchr/testify/suite"
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"path/filepath"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
 const (
-	SimpleFilePath = "test_fixtures/simple.go"
-	SimpleDirPath = "test_fixtures/dir"
+	SimpleFilePath  = "test_fixtures/simple.go"
+	ComplexFilePath = "test_fixtures/complex.go"
+	SimpleDirPath   = "test_fixtures/dir"
 )
 
 var (
-	SimpleDirFiles = [...]string{"1.go", "2.go"}
+	SimpleDirFiles    = [...]string{"1.go", "2.go"}
 	SimpleDirPackages = [...]string{"dir", "dir"}
 )
 
@@ -29,19 +31,19 @@ func (s *ParseSuite) TestParseFile() {
 	assert.NotEqual(s.T(), (*Build)(nil), build)
 	// there should be only one file, as only one was
 	// parsed by the build
-	assert.Equal(s.T(), 1, len(build.Files))
-	assert.NotEqual(s.T(), nil, build.Files[fileName])
+	assert.Equal(s.T(), 1, len(build.Files()))
+	assert.NotEqual(s.T(), nil, build.File(fileName))
 }
 
 func (s *ParseSuite) TestParseDir() {
 	build, err := ParseDir(SimpleDirPath)
 	assert.Equal(s.T(), nil, err)
 	assert.NotEqual(s.T(), (*Build)(nil), build)
-	assert.Equal(s.T(), len(SimpleDirFiles), len(build.Files))
+	assert.Equal(s.T(), len(SimpleDirFiles), len(build.Files()))
 
 	for i, name := range SimpleDirFiles {
-		assert.NotEqual(s.T(), (*File)(nil), build.Files[name])
-		assert.Equal(s.T(), SimpleDirPackages[i], build.Files[name].Package())
+		assert.NotEqual(s.T(), (*File)(nil), build.File(name))
+		assert.Equal(s.T(), SimpleDirPackages[i], build.File(name).Package())
 	}
 }
 
