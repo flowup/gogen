@@ -1,0 +1,10 @@
+version: '2'
+services:
+  testing:
+    build: .
+    container_name: gogen_testing
+    ports:
+     - "8080:8080"
+    volumes:
+     - .:/go/src/github.com/flowup/gogen:Z
+    command: bash -c "go get -t ./... && ls && goconvey -host='0.0.0.0'"
