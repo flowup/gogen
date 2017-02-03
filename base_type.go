@@ -5,7 +5,7 @@ package gogen
 type BaseType struct {
   name string
 
-  tags *TagMap
+  annotations *AnnotationMap
 }
 
 // Name will return a name of a declaration
@@ -13,7 +13,7 @@ func (b *BaseType) Name() string{
   return b.name
 }
 
-// Tags will return a tag map associated to a declaration
-func (b *BaseType) Tags() *TagMap{
-  return b.tags
+// Annotations will return a tag map associated to a declaration
+func (b *BaseType) Annotations() *AnnotationMap{
+  return b.annotations
 }

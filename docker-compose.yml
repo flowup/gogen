@@ -1,0 +1,41 @@
+version: '2'
+services:
+  init:
+    image: flowup/godev
+    volumes:
+     - .:${PROJECT_PATH}:Z
+    working_dir: ${PROJECT_PATH}
+    command: bash -c "glide init --non-interactive"
+  dev:
+    build: .
+    image: flowup/godev
+    volumes:
+     - .:${PROJECT_PATH}:Z
+    working_dir: ${PROJECT_PATH}
+    command: bash -c "glide install && goconvey -timeout 5s -host 0.0.0.0"
+    ports:
+      - 3000:3000
+      - 3001:3001
+      - 8080:8080
+    links:
+     - dev_db
+  test-dev:
+    image: flowup/godev
+    volumes:
+     - .:${PROJECT_PATH}:Z
+    working_dir: ${PROJECT_PATH}
+    command: bash -c ""
+  empty:
+    image: flowup/godev
+    volumes:
+     - .:${PROJECT_PATH}:Z
+    working_dir: ${PROJECT_PATH}
+    command: tail -f /dev/null
+  dev_db:
+    image: postgres
+    container_name: ${PROJECT_NAME}_dev_db
+    environment:
+     - POSTGRES_USER=goo
+     - POSTGRES_PASSWORD=goo
+    ports:
+     - 5432:5432

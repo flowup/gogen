@@ -13,11 +13,11 @@ func (f *Function) IsMethod() bool {
 	return f.parent.Recv != nil
 }
 
-func NewFunction(parent *ast.FuncDecl, tags *TagMap) *Function {
+func NewFunction(parent *ast.FuncDecl, annotations *AnnotationMap) *Function {
 	return &Function{
 		BaseType: BaseType{
 			name: parent.Name.Name,
-			tags: tags,
+			annotations: annotations,
 		},
 		parent: parent,
 	}
@@ -26,6 +26,6 @@ func NewFunction(parent *ast.FuncDecl, tags *TagMap) *Function {
 // ParseFunction will create and return a structure
 // for a function in a build
 func ParseFunction(parent *ast.FuncDecl, comments ast.CommentMap) *Function {
-	f := NewFunction(parent, ParseTags(comments))
+	f := NewFunction(parent, ParseAnnotations(comments))
 	return f
 }

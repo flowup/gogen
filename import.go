@@ -19,7 +19,7 @@ func (i *Import) String() string {
 }
 
 // NewImport will construct a new import
-func NewImport(parent *ast.ImportSpec, tags *TagMap) *Import{
+func NewImport(parent *ast.ImportSpec, annotations *AnnotationMap) *Import{
   var n string
   if parent.Name != nil {
     n = parent.Name.Name
@@ -31,7 +31,7 @@ func NewImport(parent *ast.ImportSpec, tags *TagMap) *Import{
   return &Import{
     BaseType: BaseType{
       name: n,
-      tags: tags,
+      annotations: annotations,
     },
     parent: parent,
     importString: parent.Path.Value,
@@ -40,7 +40,7 @@ func NewImport(parent *ast.ImportSpec, tags *TagMap) *Import{
 
 // ParseImport will parse an import and return its structure
 func ParseImport(parent *ast.ImportSpec, comments ast.CommentMap) *Import {
-  i := NewImport(parent, ParseTags(comments))
+  i := NewImport(parent, ParseAnnotations(comments))
 
   return i
 }

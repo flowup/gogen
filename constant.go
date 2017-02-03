@@ -20,11 +20,11 @@ type Constant struct {
 }
 
 // NewConstant is a factory method for constants
-func NewConstant(parent *ast.ValueSpec, tagMap *TagMap) *Constant {
+func NewConstant(parent *ast.ValueSpec, annotationMap *AnnotationMap) *Constant {
   c := &Constant{
     BaseType: BaseType{
       name: parent.Names[0].Name,
-      tags: tagMap,
+      annotations: annotationMap,
     },
     parent: parent,
   }
@@ -62,7 +62,7 @@ func (c *Constant) Type() int {
 // ParseConstant will create a constant
 // with parameters given and return it
 func ParseConstant(parent *ast.ValueSpec, comments ast.CommentMap) *Constant {
-  c := NewConstant(parent, ParseTags(comments))
+  c := NewConstant(parent, ParseAnnotations(comments))
 
   return c
 }

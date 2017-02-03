@@ -71,16 +71,16 @@ func (f *File) Struct(name string) *Structure {
 }
 
 // FilteredStructs is a type of map of structures
-// that can be filtered by its tags.
+// that can be filtered by its annotations.
 type FilteredStructs map[string]*Structure
 
 // Filter can be called on a map of structures
-// It will filter only those that have tag with name
+// It will filter only those that have annotation with name
 // given by parameter
 func (f FilteredStructs) Filter(name string) map[string]*Structure {
   newMap := make(map[string]*Structure)
   for it := range f {
-    if f[it].Tags().Has(name) {
+    if f[it].Annotations().Has(name) {
       newMap[it] = f[it]
     }
   }
@@ -135,14 +135,14 @@ func (f *File) Constants() FilteredConstants{
 }
 
 // FilteredConstants is a type of map of constants
-// that can be filtered by its tags.
+// that can be filtered by its annotations.
 type FilteredConstants map[string]*Constant
 
-// Filter will filter a map of constants by their tags.
+// Filter will filter a map of constants by their annotations.
 func (f FilteredConstants) Filter (name string) map[string]*Constant {
 	newMap := make(map[string]*Constant)
 	for it := range f {
-		if f[it].Tags().Has(name) {
+		if f[it].Annotations().Has(name) {
 			newMap[it] = f[it]
 		}
 	}
@@ -151,14 +151,14 @@ func (f FilteredConstants) Filter (name string) map[string]*Constant {
 }
 
 // FilteredFunctions is a type of map of functions
-// that can be filtered by its tags.
+// that can be filtered by its annotations.
 type FilteredFunctions map[string]*Function
 
-// Filter will filter a map of functions by their tags
+// Filter will filter a map of functions by their annotations
 func (f FilteredFunctions) Filter (name string) map[string]*Function {
   newMap := make(map[string]*Function)
   for it := range f {
-    if f[it].Tags().Has(name) {
+    if f[it].Annotations().Has(name) {
       newMap[it] = f[it]
     }
   }
