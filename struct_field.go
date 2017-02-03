@@ -60,6 +60,11 @@ func (f *StructField) Type() (string, int) {
   }
 }
 
+// Tag returns tag of the field as a string
+func (f *StructField) Tag() (string) {
+  return  string([]byte(f.parent.Tag.Value)[1:len(f.parent.Tag.Value)-1])
+}
+
 // ParseStructField will create a struct field
 // with given parameters and return it
 func ParseStructField(parent *ast.Field, comments ast.CommentMap) *StructField {

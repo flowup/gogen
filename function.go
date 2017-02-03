@@ -13,6 +13,7 @@ func (f *Function) IsMethod() bool {
 	return f.parent.Recv != nil
 }
 
+// NewFunction return initialization Function
 func NewFunction(parent *ast.FuncDecl, annotations *AnnotationMap) *Function {
 	return &Function{
 		BaseType: BaseType{

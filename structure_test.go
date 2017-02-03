@@ -62,9 +62,15 @@ func (s *ParseTypeSuite) TestStructureFields() {
 	assert.Equal(s.T(), "string", sliceType)
 	assert.Equal(s.T(), SliceType, sliceSubtype)
 
-	mapType, mapSubtype := s.st.Fields()["MapVal"].Type()
+	sliceTag := s.st.Fields()["SliceVal"].Tag()
+	assert.Equal(s.T(), `gorm:"index"`,sliceTag )
+
+	mapType, mapSubtype:= s.st.Fields()["MapVal"].Type()
 	assert.Equal(s.T(), "[string]int", mapType)
 	assert.Equal(s.T(), MapType, mapSubtype)
+
+	mapTag := s.st.Fields()["MapVal"].Tag()
+	assert.Equal(s.T(), `json:"map_val"`,mapTag)
 }
 
 func (s *ParseTypeSuite) TestStructureComplexFields() {

@@ -12,8 +12,8 @@ const StringConstant = "qwer"
 // @test -r="q w e r"
 type X struct {
 	Val int // @field
-	SliceVal []string
-	MapVal map[string]int
+	SliceVal []string `gorm:"index"`
+	MapVal map[string]int `json:"map_val"`
 }
 
 // @func --name add
