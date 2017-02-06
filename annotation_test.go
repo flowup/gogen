@@ -9,7 +9,7 @@ import (
 
 // Please note that this test suite refers to the
 // test_fixtures/simple.go test file.
-type ParseTagsSuite struct {
+type ParseAnnotationsSuite struct {
   suite.Suite
   build *Build
   file *File
@@ -18,7 +18,7 @@ type ParseTagsSuite struct {
   in *Interface
 }
 
-func (s *ParseTagsSuite) SetupTest() {
+func (s *ParseAnnotationsSuite) SetupTest() {
   var err error
   s.build, err = ParseFile(SimpleFilePath)
   assert.Equal(s.T(), nil, err)
@@ -31,23 +31,23 @@ func (s *ParseTagsSuite) SetupTest() {
   assert.NotEqual(s.T(), (*Interface)(nil), s.in)
 }
 
-func (s *ParseTagsSuite) TestParseTags() {
-  //assert.Equal(s.T(), true, s.st.Tags().HasTag("@dao"))
-  daoTag, ok := s.st.Tags().Get("@dao")
+func (s *ParseAnnotationsSuite) TestParseAnnotations() {
+  //assert.Equal(s.T(), true, s.st.Annotations().HasAnnotation("@dao"))
+  daoAnnotation, ok := s.st.Annotations().Get("@dao")
   assert.Equal(s.T(), true, ok)
-  paramVal, ok := daoTag.Get("asdf")
+  paramVal, ok := daoAnnotation.Get("asdf")
   assert.Equal(s.T(), true, ok)
   assert.Equal(s.T(), "val poi", paramVal)
 
-  interTag, ok := s.in.Tags().Get("@interface")
+  interAnnotation, ok := s.in.Annotations().Get("@interface")
   assert.Equal(s.T(), true, ok)
-  name, ok := interTag.Get("name")
+  name, ok := interAnnotation.Get("name")
   assert.Equal(s.T(), true, ok)
   assert.Equal(s.T(), "y", name)
 }
 
-func (s *ParseTagsSuite) TestTag() {
-  tag := NewTag("customTag")
+func (s *ParseAnnotationsSuite) TestAnnotation() {
+  tag := NewAnnotation("customAnnotation")
   tag.Set("customPar", "customVal")
 
   assert.Equal(s.T(), true, tag.Has("customPar"))
@@ -66,30 +66,30 @@ func (s *ParseTagsSuite) TestTag() {
   assert.Equal(s.T(), 2, len(tag.GetAll()))
 }
 
-func (s *ParseTagsSuite) TestTagMap() {
-  tm := NewTagMap()
-  tag := NewTag("customTag")
-  tm.Set("customTag", tag)
+func (s *ParseAnnotationsSuite) TestAnnotationMap() {
+  tm := NewAnnotationMap()
+  tag := NewAnnotation("customAnnotation")
+  tm.Set("customAnnotation", tag)
 
-  assert.Equal(s.T(), true, tm.Has("customTag"))
+  assert.Equal(s.T(), true, tm.Has("customAnnotation"))
 
   assert.Equal(s.T(), 1, tm.Num())
 
-  names := tm.GetTagNames()
-  assert.Equal(s.T(), "customTag", names[0])
+  names := tm.GetAnnotationNames()
+  assert.Equal(s.T(), "customAnnotation", names[0])
 
-  tm.Delete("customTag")
+  tm.Delete("customAnnotation")
   assert.Equal(s.T(), 0, tm.Num())
 
-  newTag := NewTag("newTag")
-  newTag2 := NewTag("newTag2")
+  newAnnotation := NewAnnotation("newAnnotation")
+  newAnnotation2 := NewAnnotation("newAnnotation2")
 
-  tm.Set("newTag", newTag)
-  tm.Set("newTag2", newTag2)
+  tm.Set("newAnnotation", newAnnotation)
+  tm.Set("newAnnotation2", newAnnotation2)
   tags := tm.GetAll()
   assert.Equal(s.T(), 2, len(tags))
 }
 
-func TestParseTagsSuite(t *testing.T) {
-  suite.Run(t, &ParseTagsSuite{})
+func TestParseAnnotationsSuite(t *testing.T) {
+  suite.Run(t, &ParseAnnotationsSuite{})
 }

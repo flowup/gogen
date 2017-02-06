@@ -13,11 +13,11 @@ type Interface struct {
 
 // NewInterface creates a new Interface type and returns
 // it with the provided parent and spec.
-func NewInterface(parent *ast.InterfaceType, spec *ast.TypeSpec, tagMap *TagMap) *Interface {
+func NewInterface(parent *ast.InterfaceType, spec *ast.TypeSpec, annotationMap *AnnotationMap) *Interface {
   i := &Interface{
     BaseType: BaseType{
       name: spec.Name.Name,
-      tags: tagMap,
+      annotations: annotationMap,
     },
     parent: parent,
     spec:   spec,
@@ -30,7 +30,7 @@ func NewInterface(parent *ast.InterfaceType, spec *ast.TypeSpec, tagMap *TagMap)
 // ParseInterface will create an interface
 // with parameters given and return it
 func ParseInterface(spec *ast.TypeSpec, parent *ast.InterfaceType, comments ast.CommentMap) *Interface {
-  i := NewInterface(parent, spec, ParseTags(comments))
+  i := NewInterface(parent, spec, ParseAnnotations(comments))
 
   return i
 }

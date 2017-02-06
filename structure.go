@@ -19,11 +19,11 @@ type Structure struct {
 
 // NewStructure returns new Instance of the structure type
 // with the provided parent and type spec.
-func NewStructure(parent *ast.StructType, spec *ast.TypeSpec, fMap map[string]*StructField, tagMap *TagMap) *Structure {
+func NewStructure(parent *ast.StructType, spec *ast.TypeSpec, fMap map[string]*StructField, annotationMap *AnnotationMap) *Structure {
 	s := &Structure{
     BaseType: BaseType{
       name: spec.Name.Name,
-      tags: tagMap,
+      annotations: annotationMap,
     },
     parent : parent,
     spec: spec,
@@ -35,15 +35,15 @@ func NewStructure(parent *ast.StructType, spec *ast.TypeSpec, fMap map[string]*S
 }
 
 // FilteredStructFields is a map of struct fields
-// that can be filtered by their tags
+// that can be filtered by their annotations
 type FilteredStructFields map[string]*StructField
 
 // Filter will filter struct fields map and return
-// all those that have tag with name given by parameter
+// all those that have annotation with name given by parameter
 func(f FilteredStructFields) Filter(name string) map[string]*StructField {
   newMap := make(map[string]*StructField)
   for it := range f {
-    if f[it].Tags().Has(name) {
+    if f[it].Annotations().Has(name) {
       newMap[it] = f[it]
     }
   }
@@ -83,7 +83,7 @@ func ParseStruct(spec *ast.TypeSpec, parent *ast.StructType, comments ast.Commen
     fMap[field.Names[0].Name] = ParseStructField(field, comments.Filter(field))
   }
 
-  s := NewStructure(parent, spec, fMap, ParseTags(comments))
+  s := NewStructure(parent, spec, fMap, ParseAnnotations(comments))
 
 	return s
 }

@@ -7,63 +7,63 @@ import (
   "regexp"
 )
 
-// Tag holds information about one tag, its name
+// Annotation holds information about one annotation, its name
 // parameters and their values
-type Tag struct {
-  name    string //may be obsolete bc tags are indexed in tag map by their names
+type Annotation struct {
+  name    string //may be obsolete bc annotations are indexed in annotation map by their names
   values  map[string]string
 }
 
-// NewTag will create and return an empty tag
-func NewTag(name string) *Tag{
-  return &Tag{
+// NewAnnotation will create and return an empty annotation
+func NewAnnotation(name string) *Annotation{
+  return &Annotation{
     name: name,
     values: make(map[string]string),
   }
 }
 
-// GetName will return the name of a tag
-func (t *Tag) GetName () string {
+// GetName will return the name of a annotation
+func (t *Annotation) GetName () string {
   return t.name
 }
 
 // Has will return if a parameter with name
-// sent to function is a parameter of this tag
-func (t *Tag) Has (name string) bool {
+// sent to function is a parameter of this annotation
+func (t *Annotation) Has (name string) bool {
   _, ok := t.values[name]
   return ok
 }
 
 // Get will return the value of a parameter
 // along with bool value that determines if the parameter was found
-func (t *Tag) Get (name string) (string, bool) {
+func (t *Annotation) Get (name string) (string, bool) {
   retVal, ok := t.values[name]
   return retVal, ok
 }
 
 // Set will set a value of a parameter.
 // Can be used for creating new parameters
-func (t *Tag) Set (name string, value string) {
+func (t *Annotation) Set (name string, value string) {
   t.values[name] = value
 }
 
-// Delete will delete a parameter from a tag
-func (t *Tag) Delete (name string) {
+// Delete will delete a parameter from a annotation
+func (t *Annotation) Delete (name string) {
   delete(t.values, name)
 }
 
-// Num will return number of parameters of a tag
-func (t *Tag) Num () int {
+// Num will return number of parameters of a annotation
+func (t *Annotation) Num () int {
   return len(t.values)
 }
 
-// GetAll will return all parameters of a tag with their values
-func (t *Tag) GetAll () map[string]string {
+// GetAll will return all parameters of a annotation with their values
+func (t *Annotation) GetAll () map[string]string {
   return t.values
 }
 
 // GetParameterNames will return all parameter names.
-func (t *Tag) GetParameterNames () []string {
+func (t *Annotation) GetParameterNames () []string {
   keys := []string{}
   for key := range t.values {
     keys = append(keys, key)
@@ -72,68 +72,68 @@ func (t *Tag) GetParameterNames () []string {
   return keys
 }
 
-// TagMap  holds build tags
+// AnnotationMap  holds build annotations
 // of one function/interface/structure etc
-type TagMap struct {
-  tags map[string]*Tag
+type AnnotationMap struct {
+  annotations map[string]*Annotation
 }
 
-// NewTagMap will create and return an empty tag map
-func NewTagMap() *TagMap {
-  return &TagMap{
-    tags: make(map[string]*Tag),
+// NewAnnotationMap will create and return an empty annotation map
+func NewAnnotationMap() *AnnotationMap {
+  return &AnnotationMap{
+    annotations: make(map[string]*Annotation),
   }
 }
 
-// Has will check if the map has a tag with
+// Has will check if the map has a annotation with
 // name given by parameter
-func (t *TagMap) Has (name string) bool {
-  _, ok := t.tags[name]
+func (t *AnnotationMap) Has (name string) bool {
+  _, ok := t.annotations[name]
   return ok
 }
 
-// Get will get a value of a tag with
+// Get will get a value of a annotation with
 // key given by parameter
-func (t *TagMap) Get (name string) (*Tag, bool) {
-  retVal, ok := t.tags[name]
+func (t *AnnotationMap) Get (name string) (*Annotation, bool) {
+  retVal, ok := t.annotations[name]
   return retVal, ok
 }
 
-// Set will set a tag value to value
+// Set will set a annotation value to value
 // given by parameter
-func (t *TagMap) Set (name string, tag *Tag) {
-  t.tags[name] = tag
+func (t *AnnotationMap) Set (name string, annotation *Annotation) {
+  t.annotations[name] = annotation
 }
 
-// Delete will delete a tag with name given
+// Delete will delete a annotation with name given
 // by parameter from the map
-func (t *TagMap) Delete (name string) {
-  delete(t.tags, name)
+func (t *AnnotationMap) Delete (name string) {
+  delete(t.annotations, name)
 }
 
-// Num will return number of tags in the map
-func (t *TagMap) Num () int {
-  return len(t.tags)
+// Num will return number of annotations in the map
+func (t *AnnotationMap) Num () int {
+  return len(t.annotations)
 }
 
-// GetAll will return all tags in the map
-func (t *TagMap) GetAll () map[string]*Tag {
-  return t.tags
+// GetAll will return all annotations in the map
+func (t *AnnotationMap) GetAll () map[string]*Annotation {
+  return t.annotations
 }
 
-// GetTagNames will get names of all tags in the map
-func (t *TagMap) GetTagNames () []string {
+// GetAnnotationNames will get names of all annotations in the map
+func (t *AnnotationMap) GetAnnotationNames () []string {
   keys := []string{}
-  for key := range t.tags {
+  for key := range t.annotations {
     keys = append(keys, key)
   }
 
   return keys
 }
 
-// parseValue parses one value of a tag,
+// parseValue parses one value of a annotation,
 // returns the remaining string to parse,
-// parameter of a tag and its value
+// parameter of a annotation and its value
 func parseValue(input string) (string, string, string) {
   i := 0
   name := ""
@@ -147,7 +147,7 @@ func parseValue(input string) (string, string, string) {
     i++
   }
 
-  // skip the "-" signs at the start of name of the tag
+  // skip the "-" signs at the start of name of the annotation
   for i < len(input) {
     if input[i] != '-' {
       break
@@ -155,7 +155,7 @@ func parseValue(input string) (string, string, string) {
     i++
   }
 
-  // read the name of a tag/parameter
+  // read the name of a annotation/parameter
   for i < len(input) {
     if unicode.IsSpace(rune(input[i])) || input[i] == '=' {
       break
@@ -189,7 +189,7 @@ func parseValue(input string) (string, string, string) {
     i++
   }
 
-  // read the value of a tag parameter
+  // read the value of a annotation parameter
   if delimiter == ' ' {
     // if the value is separated by spaces
     for i < len(input) {
@@ -215,37 +215,37 @@ func parseValue(input string) (string, string, string) {
   return input[i:], name, value
 }
 
-// ParseTags will create a TagMap from comments given by
+// ParseAnnotations will create a AnnotationMap from comments given by
 // parameter
-func ParseTags (commentMap ast.CommentMap) *TagMap {
-  tagMap := NewTagMap()
+func ParseAnnotations (commentMap ast.CommentMap) *AnnotationMap {
+  annotationMap := NewAnnotationMap()
   for _, comment := range commentMap.Comments() {
     // split comment to lines
     lines := strings.Split(comment.Text(), "\n")
     for _, line := range lines {
-      // if line does not match this regexp made by Miro do not read tags from line
+      // if line does not match this regexp made by Miro do not read annotations from line
       if !regexp.MustCompile(`(\@\S+)(:? ([\S]+))*`).Match([]byte(line)) {
         continue
       }
-      line, tagName, _ := parseValue(line)
-      // if there is a tag on the line read its parameters and their values
-      if len(tagName) > 0 && tagName[0] == '@' {
-        tag := NewTag(tagName)
-        //fmt.Println("Tag Name:", tagName)
+      line, annotationName, _ := parseValue(line)
+      // if there is a annotation on the line read its parameters and their values
+      if len(annotationName) > 0 && annotationName[0] == '@' {
+        annotation := NewAnnotation(annotationName)
+        //fmt.Println("Annotation Name:", annotationName)
         // while there is some input check for parameters
         for line != "" {
           var parName, parVal string
           line, parName, parVal = parseValue(line)
           if parName != "" {
             //fmt.Println("Parameter name:", parName, "Parameter value", parVal)
-            tag.Set(parName, parVal)
+            annotation.Set(parName, parVal)
           }
         }
-        // save tag to map
-        tagMap.Set(tagName, tag)
+        // save annotation to map
+        annotationMap.Set(annotationName, annotation)
       }
     }
   }
 
-  return tagMap
+  return annotationMap
 }
