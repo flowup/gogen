@@ -65,6 +65,9 @@ func (s *ParseTypeSuite) TestStructureFields() {
 	sliceTag := s.st.Fields()["SliceVal"].Tag()
 	assert.Equal(s.T(), `gorm:"index"`,sliceTag )
 
+	valTag := s.st.Fields()["Val"].Tag()
+	assert.Equal(s.T(), ``,valTag )
+
 	mapType, mapSubtype:= s.st.Fields()["MapVal"].Type()
 	assert.Equal(s.T(), "[string]int", mapType)
 	assert.Equal(s.T(), MapType, mapSubtype)
