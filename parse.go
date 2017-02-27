@@ -27,8 +27,8 @@ func ParseDir(path string) (*Build, error) {
 		for name, astTree := range pkg.Files {
 			baseName := filepath.Base(name)
 
-      // create a comment map from file
-      commentMap := ast.NewCommentMap(&fileSet, astTree, astTree.Comments)
+			// create a comment map from file
+			commentMap := ast.NewCommentMap(&fileSet, astTree, astTree.Comments)
 
 			fileAST, err := ParseFileAST(baseName, astTree, commentMap)
 			if err != nil {
@@ -45,17 +45,17 @@ func ParseDir(path string) (*Build, error) {
 // was passed. FileSet of the Build will only contain a
 // single file.
 func ParseFile(path string) (*Build, error) {
-  var fileSet token.FileSet
+	var fileSet token.FileSet
 
-	astTree, err := parser.ParseFile(&fileSet, path, nil, parser.AllErrors | parser.ParseComments)
+	astTree, err := parser.ParseFile(&fileSet, path, nil, parser.AllErrors|parser.ParseComments)
 	if err != nil {
 		return nil, err
 	}
 
 	fileName := filepath.Base(path)
 
-  // create a comment map from file
-  commentMap := ast.NewCommentMap(&fileSet, astTree, astTree.Comments)
+	// create a comment map from file
+	commentMap := ast.NewCommentMap(&fileSet, astTree, astTree.Comments)
 
 	// create new build for the file
 	build := NewBuild()
@@ -93,9 +93,20 @@ func ParseFileAST(name string, tree *ast.File, commentMap ast.CommentMap) (*File
 						f.AddStruct(ParseStruct(specValue, typeValue, commentMap.Filter(declaration)))
 					case *ast.InterfaceType:
 						f.AddInterface(ParseInterface(specValue, typeValue, commentMap.Filter(declaration)))
+					case *ast.FuncType:
+						fmt.Println("Generic value not recognized: ", specValue)
+					case *ast.ArrayType:
+						f.AddArray(ParseArray(specValue, typeValue, commentMap.Filter(declaration)))
+					case *ast.MapType:
+						fmt.Println("Generic value not recognized: ", specValue)
+					case *ast.ChanType:
+						fmt.Println("Generic value not recognized: ", specValue)
+					default:
+						f.AddBaseType(ParseBaseType(specValue, typeValue, commentMap.Filter(declaration)))
 					}
+
 				case *ast.ImportSpec:
-					// just ignore for now
+				// just ignore for now
 				case *ast.ValueSpec:
 					f.AddConstant(ParseConstant(specValue, commentMap.Filter(declaration)))
 				default:
