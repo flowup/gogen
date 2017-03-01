@@ -4,7 +4,7 @@ import "go/ast"
 
 // File encapsulates the physical File and it's ast
 type File struct {
-	name string // name of the file
+	name   string // name of the file
 	parent *ast.File
 
 	// imports
@@ -13,21 +13,25 @@ type File struct {
 	// types
 	structures map[string]*Structure
 	interfaces map[string]*Interface
-	functions map[string]*Function
-	constants map[string]*Constant
+	functions  map[string]*Function
+	constants  map[string]*Constant
+	baseType   map[string]*BaseType
+	arrays     map[string]*Array
 }
 
 // NewFile creates a new File instance with provided
 // file name and it's parent ast.File.
 func NewFile(name string, parent *ast.File) *File {
 	return &File{
-		name: name,
-		parent: parent,
+		name:       name,
+		parent:     parent,
 		structures: make(map[string]*Structure),
 		interfaces: make(map[string]*Interface),
-		functions: make(map[string]*Function),
-    constants: make(map[string]*Constant),
-		imports: make(map[string]*Import),
+		functions:  make(map[string]*Function),
+		constants:  make(map[string]*Constant),
+		imports:    make(map[string]*Import),
+		baseType:   make(map[string]*BaseType),
+		arrays:     make(map[string]*Array),
 	}
 }
 
@@ -50,10 +54,11 @@ func (f *File) AddImport(i *Import) {
 
 // Import will return an import with given name
 // or nil if file does not contain such import
-func (f *File) Import(name string) *Import{
+func (f *File) Import(name string) *Import {
 	return f.imports[name]
 }
 
+// Imports ...
 func (f *File) Imports() map[string]*Import {
 	return f.imports
 }
@@ -78,14 +83,14 @@ type FilteredStructs map[string]*Structure
 // It will filter only those that have annotation with name
 // given by parameter
 func (f FilteredStructs) Filter(name string) map[string]*Structure {
-  newMap := make(map[string]*Structure)
-  for it := range f {
-    if f[it].Annotations().Has(name) {
-      newMap[it] = f[it]
-    }
-  }
+	newMap := make(map[string]*Structure)
+	for it := range f {
+		if f[it].Annotations().Has(name) {
+			newMap[it] = f[it]
+		}
+	}
 
-  return newMap
+	return newMap
 }
 
 // Structs returns a map of structures contained
@@ -125,12 +130,12 @@ func (f *File) AddConstant(c *Constant) {
 
 // Constant will return a constant by it's name. If no
 // constant is found, this will return nil
-func (f *File) Constant(name string) *Constant{
+func (f *File) Constant(name string) *Constant {
 	return f.constants[name]
 }
 
 // Constants will return full map of constants
-func (f *File) Constants() FilteredConstants{
+func (f *File) Constants() FilteredConstants {
 	return f.constants
 }
 
@@ -139,7 +144,7 @@ func (f *File) Constants() FilteredConstants{
 type FilteredConstants map[string]*Constant
 
 // Filter will filter a map of constants by their annotations.
-func (f FilteredConstants) Filter (name string) map[string]*Constant {
+func (f FilteredConstants) Filter(name string) map[string]*Constant {
 	newMap := make(map[string]*Constant)
 	for it := range f {
 		if f[it].Annotations().Has(name) {
@@ -155,15 +160,15 @@ func (f FilteredConstants) Filter (name string) map[string]*Constant {
 type FilteredFunctions map[string]*Function
 
 // Filter will filter a map of functions by their annotations
-func (f FilteredFunctions) Filter (name string) map[string]*Function {
-  newMap := make(map[string]*Function)
-  for it := range f {
-    if f[it].Annotations().Has(name) {
-      newMap[it] = f[it]
-    }
-  }
+func (f FilteredFunctions) Filter(name string) map[string]*Function {
+	newMap := make(map[string]*Function)
+	for it := range f {
+		if f[it].Annotations().Has(name) {
+			newMap[it] = f[it]
+		}
+	}
 
-  return newMap
+	return newMap
 }
 
 // Functions will return a full map of functions provided
@@ -184,7 +189,7 @@ func (b *Build) Files() map[string]*File {
 }
 
 // File will return a file in a build by its name
-func (b *Build) File(name string) *File{
+func (b *Build) File(name string) *File {
 	return b.files[name]
 }
 
@@ -200,4 +205,28 @@ func NewBuild() *Build {
 // into an existing map of files.
 func (b *Build) AddFile(name string, f *File) {
 	b.files[name] = f
+}
+
+// BaseType returns an basetype with the given name.
+// If no basetype with the name was found, returns nil
+func (f *File) BaseType(name string) *BaseType {
+	return f.baseType[name]
+}
+
+// AddBaseType adds passed basetype type into the
+// basetypes described by the File
+func (f *File) AddBaseType(i *BaseType) {
+	f.baseType[i.Name()] = i
+}
+
+// Array returns an basetype with the given name.
+// If no basetype with the name was found, returns nil
+func (f *File) Array(name string) *Array {
+	return f.arrays[name]
+}
+
+// AddArray adds passed basetype type into the
+// basetypes described by the File
+func (f *File) AddArray(i *Array) {
+	f.arrays[i.Name()] = i
 }

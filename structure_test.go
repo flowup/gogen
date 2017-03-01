@@ -19,6 +19,7 @@ type ParseTypeSuite struct {
 
 	st *Structure
 	in *Interface
+	mdl *Structure
 }
 
 func (s *ParseTypeSuite) SetupTest() {
@@ -32,6 +33,9 @@ func (s *ParseTypeSuite) SetupTest() {
 
 	s.in = s.file.Interface("Y")
 	assert.NotEqual(s.T(), (*Interface)(nil), s.in)
+
+	s.mdl = s.file.Struct("Model")
+	assert.NotEqual(s.T(), (*Structure)(nil), s.mdl)
 
 	s.complexBuild, err = ParseFile(ComplexFilePath)
 	assert.Equal(s.T(), nil, err)
@@ -49,6 +53,10 @@ func (s *ParseTypeSuite) TestParseStruct() {
 
 func (s *ParseTypeSuite) TestParseInterface() {
 	assert.Equal(s.T(), "Y", s.in.Name())
+}
+
+func (s *ParseTypeSuite) TestParseModel() {
+	assert.Equal(s.T(), "Model", s.mdl.Name())
 }
 
 func (s *ParseTypeSuite) TestStructureFields() {
@@ -74,6 +82,14 @@ func (s *ParseTypeSuite) TestStructureFields() {
 
 	mapTag := s.st.Fields()["MapVal"].Tag()
 	assert.Equal(s.T(), `json:"map_val"`,mapTag)
+
+	deleteType, timeSubType := s.mdl.Fields()["DeletedAt"].Type()
+	assert.Equal(s.T(), "time.Time", deleteType)
+	assert.Equal(s.T(), PointerType, timeSubType)
+
+	ptrType, ptrSubType := s.mdl.Fields()["Ptr"].Type()
+	assert.Equal(s.T(), "int", ptrType)
+	assert.Equal(s.T(), PointerType, ptrSubType)
 }
 
 func (s *ParseTypeSuite) TestStructureComplexFields() {

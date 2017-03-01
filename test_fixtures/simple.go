@@ -2,6 +2,7 @@ package fixture
 
 import (
 	"math"
+	"time"
 )
 
 // @pi
@@ -11,9 +12,9 @@ const StringConstant = "qwer"
 // @dao --asdf "val poi" --qwer 654
 // @test -r="q w e r"
 type X struct {
-	Val int // @field
+	Val      int // @field
 	SliceVal []string `gorm:"index"`
-	MapVal map[string]int `json:"map_val"`
+	MapVal   map[string]int `json:"map_val"`
 }
 
 // @func --name add
@@ -34,4 +35,15 @@ func AddTwo(a X, b X) X {
 // @interface --name y
 type Y interface {
 	quack()
+}
+
+type I int
+
+type S string
+
+type A []int
+
+type Model struct {
+	Ptr *int
+	DeletedAt *time.Time
 }
