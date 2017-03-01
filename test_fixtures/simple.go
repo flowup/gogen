@@ -2,6 +2,7 @@ package fixture
 
 import (
 	"math"
+	"time"
 )
 
 // @pi
@@ -41,3 +42,8 @@ type I int
 type S string
 
 type A []int
+
+type Model struct {
+	Ptr *int
+	DeletedAt *time.Time
+}

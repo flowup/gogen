@@ -2,6 +2,7 @@ package gogen
 
 import (
 	"go/ast"
+	"fmt"
 )
 
 // These value are used in determining type of struct field
@@ -51,11 +52,14 @@ func (f *StructField) Type() (string, int) {
 	case *ast.SelectorExpr:
 		return t.X.(*ast.Ident).Name + "." + t.Sel.Name, SelectorType
 	case *ast.StarExpr:
-		name := ""
-		if ident := t.X.(*ast.Ident); ident != nil {
-			name = ident.Name
+		if ident, ok := t.X.(*ast.Ident); ok {
+			return ident.Name, PointerType
 		}
-		return name, PointerType
+
+		if expr, ok := t.X.(*ast.SelectorExpr); ok {
+			return fmt.Sprintf("%s.%s", expr.X, expr.Sel.Name), PointerType
+		}
+		return "", PointerType
 	default:
 		panic("StructField type not recognized! Please report this issue.")
 	}
