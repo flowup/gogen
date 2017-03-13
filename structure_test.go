@@ -20,6 +20,10 @@ type ParseTypeSuite struct {
 	st *Structure
 	in *Interface
 	mdl *Structure
+	z *Structure
+	w *Structure
+	v *Structure
+
 }
 
 func (s *ParseTypeSuite) SetupTest() {
@@ -36,6 +40,15 @@ func (s *ParseTypeSuite) SetupTest() {
 
 	s.mdl = s.file.Struct("Model")
 	assert.NotEqual(s.T(), (*Structure)(nil), s.mdl)
+
+	s.z = s.file.Struct("Z")
+	assert.NotEqual(s.T(), (*Structure)(nil), s.z)
+
+	s.w = s.file.Struct("W")
+	assert.NotEqual(s.T(), (*Structure)(nil), s.w)
+
+	s.v = s.file.Struct("V")
+	assert.NotEqual(s.T(), (*Structure)(nil), s.v)
 
 	s.complexBuild, err = ParseFile(ComplexFilePath)
 	assert.Equal(s.T(), nil, err)
@@ -57,6 +70,10 @@ func (s *ParseTypeSuite) TestParseInterface() {
 
 func (s *ParseTypeSuite) TestParseModel() {
 	assert.Equal(s.T(), "Model", s.mdl.Name())
+}
+
+func (s *ParseTypeSuite) TestParseZ() {
+	assert.Equal(s.T(), "Z", s.z.Name())
 }
 
 func (s *ParseTypeSuite) TestStructureFields() {
@@ -90,6 +107,19 @@ func (s *ParseTypeSuite) TestStructureFields() {
 	ptrType, ptrSubType := s.mdl.Fields()["Ptr"].Type()
 	assert.Equal(s.T(), "int", ptrType)
 	assert.Equal(s.T(), PointerType, ptrSubType)
+
+	modelType, _/*modelSubType */:= s.z.Fields()["_Model"].Type()
+	assert.Equal(s.T(), "Model", modelType)
+
+	wType, _/*wSubType */:= s.w.Fields()["_Z"].Type()
+	assert.Equal(s.T(), "Z", wType)
+
+	vWType, _/*vWSubType */:= s.v.Fields()["_W"].Type()
+	assert.Equal(s.T(), "W", vWType)
+
+	vZType, _/*vZSubType */:= s.v.Fields()["_Z"].Type()
+	assert.Equal(s.T(), "Z", vZType)
+
 }
 
 func (s *ParseTypeSuite) TestStructureComplexFields() {
