@@ -135,7 +135,10 @@ func ParseFileAST(name string, tree *ast.File, commentMap ast.CommentMap) (*File
 					structType = receiver.X.(*ast.Ident).Obj.Decl.(*ast.TypeSpec).Type.(*ast.StructType)
 				// copy receiver
 				case *ast.Ident:
-					structType = receiver.Obj.Decl.(*ast.TypeSpec).Type.(*ast.StructType)
+					switch receiver.Obj.Decl.(*ast.TypeSpec).Type.(type) {
+					case *ast.StructType:
+						structType = receiver.Obj.Decl.(*ast.TypeSpec).Type.(*ast.StructType)
+					}
 				}
 
 				// search for the structures that receive the method
