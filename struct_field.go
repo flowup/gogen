@@ -45,7 +45,11 @@ func (f *StructField) Type() (string, int) {
 		}
 		return t.Name, PrimitiveType
 	case *ast.ArrayType:
-		return t.Elt.(*ast.Ident).Name, SliceType
+		switch t.Elt.(type) {
+		case *ast.Ident:
+			return t.Elt.(*ast.Ident).Name, SliceType
+		}
+		return "", SliceType
 	case *ast.MapType:
 		return "[" + t.Key.(*ast.Ident).Name + "]" + t.Value.(*ast.Ident).Name, MapType
 	// imported types
