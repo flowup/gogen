@@ -26,9 +26,14 @@ type StructField struct {
 // NewStructField will return a new struct field with
 // given parent and tag map
 func NewStructField(parent *ast.Field, annotations *AnnotationMap) *StructField {
+	name := ""
+	if len(parent.Names) > 0 {
+		name = parent.Names[0].Name
+	}
 	return &StructField{
 		BaseType: BaseType{
 			annotations: annotations,
+			name:        name,
 		},
 		parent: parent,
 	}
@@ -55,7 +60,7 @@ func (f *StructField) Type() (string, int) {
 		return fmt.Sprintf("%s", t.Elt.(*ast.StarExpr).X), SliceType
 	case *ast.MapType:
 		return "[" + t.Key.(*ast.Ident).Name + "]" + t.Value.(*ast.Ident).Name, MapType
-	// imported types
+		// imported types
 	case *ast.SelectorExpr:
 		return t.X.(*ast.Ident).Name + "." + t.Sel.Name, SelectorType
 	case *ast.StarExpr:
