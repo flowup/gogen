@@ -52,7 +52,7 @@ func (f *StructField) Type() (string, int) {
 		case *ast.Ident:
 			return t.Elt.(*ast.Ident).Name, SliceType
 		}
-		return "", SliceType
+		return fmt.Sprintf("%s", t.Elt.(*ast.StarExpr).X), SliceType
 	case *ast.MapType:
 		return "[" + t.Key.(*ast.Ident).Name + "]" + t.Value.(*ast.Ident).Name, MapType
 	// imported types
