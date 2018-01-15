@@ -44,8 +44,8 @@ type S string
 type A []int
 
 type Model struct {
-	ID string
-	Ptr *int
+	ID         string
+	Ptr       *int
 	DeletedAt *time.Time
 }
 

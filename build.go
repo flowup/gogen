@@ -111,6 +111,11 @@ func (f *File) Interface(name string) *Interface {
 	return f.interfaces[name]
 }
 
+// Interfaces returns map of interfaces
+func (f *File) Interfaces() map[string]*Interface {
+	return f.interfaces
+}
+
 // AddFunction will add the passed function into the
 // map of functions described by the file
 func (f *File) AddFunction(fun *Function) {

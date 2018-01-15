@@ -106,14 +106,14 @@ func ParseFileAST(name string, tree *ast.File, commentMap ast.CommentMap) (*File
 					}
 
 				case *ast.ImportSpec:
-				// just ignore for now
+					// just ignore for now
 				case *ast.ValueSpec:
 					f.AddConstant(ParseConstant(specValue, commentMap.Filter(declaration)))
 				default:
 					fmt.Println("Generic value not recognized: ", specValue)
 				}
 			}
-		// catch function declarations
+			// catch function declarations
 		case *ast.FuncDecl:
 			fun := ParseFunction(decValue, commentMap.Filter(declaration))
 			if !fun.IsMethod() {
@@ -133,7 +133,7 @@ func ParseFileAST(name string, tree *ast.File, commentMap ast.CommentMap) (*File
 				// pointer receiver
 				case *ast.StarExpr:
 					structType = receiver.X.(*ast.Ident).Obj.Decl.(*ast.TypeSpec).Type.(*ast.StructType)
-				// copy receiver
+					// copy receiver
 				case *ast.Ident:
 					switch receiver.Obj.Decl.(*ast.TypeSpec).Type.(type) {
 					case *ast.StructType:
