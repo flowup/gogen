@@ -44,6 +44,21 @@ type S string
 type A []int
 
 type Model struct {
+	ID string
 	Ptr *int
 	DeletedAt *time.Time
+}
+
+type Z struct {
+	Model
+	Stuff string
+}
+
+type W struct {
+	Z
+}
+
+type V struct {
+	W
+	Z
 }
