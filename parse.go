@@ -121,7 +121,13 @@ func ParseFileAST(name string, tree *ast.File, commentMap ast.CommentMap) (*File
 				switch receiver := fun.parent.Recv.List[0].Type.(type) {
 				// pointer receiver
 				case *ast.StarExpr:
-					structType = receiver.X.(*ast.Ident).Obj.Decl.(*ast.TypeSpec).Type.(*ast.StructType)
+					// if the receiver is defined append it to it,
+					// otherwise register it as normal function
+					if receiver.X.(*ast.Ident).Obj != nil {
+						structType = receiver.X.(*ast.Ident).Obj.Decl.(*ast.TypeSpec).Type.(*ast.StructType)
+					} else {
+						f.AddFunction(fun)
+					}
 				// copy receiver
 				case *ast.Ident:
 					structType = receiver.Obj.Decl.(*ast.TypeSpec).Type.(*ast.StructType)
