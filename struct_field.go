@@ -28,7 +28,6 @@ type StructField struct {
 func NewStructField(parent *ast.Field, annotations *AnnotationMap) *StructField {
 	return &StructField{
 		BaseType: BaseType{
-			name:        parent.Names[0].Name,
 			annotations: annotations,
 		},
 		parent: parent,
@@ -38,6 +37,10 @@ func NewStructField(parent *ast.Field, annotations *AnnotationMap) *StructField 
 // Type returns type of the field as a string and
 // FieldType such as Slice, Map or Primitive
 func (f *StructField) Type() (string, int) {
+	if f == nil {
+		return "", Unrecognized
+	}
+
 	switch t := f.parent.Type.(type) {
 	case *ast.Ident:
 		if t.Obj != nil {

@@ -1,18 +1,19 @@
 package gogen
 
 import (
-  "go/ast"
+	"go/ast"
+	"fmt"
 )
 
 // Structure represents the struct type of a
 // given build
 type Structure struct {
-  BaseType
-  parent *ast.StructType
+	BaseType
+	parent *ast.StructType
 	spec   *ast.TypeSpec
 
-  // slice of fields
-  fields map[string]*StructField
+	// slice of fields
+	fields map[string]*StructField
 	// map of methods
 	methods map[string]*Function
 }
@@ -21,17 +22,17 @@ type Structure struct {
 // with the provided parent and type spec.
 func NewStructure(parent *ast.StructType, spec *ast.TypeSpec, fMap map[string]*StructField, annotationMap *AnnotationMap) *Structure {
 	s := &Structure{
-    BaseType: BaseType{
-      name: spec.Name.Name,
-      annotations: annotationMap,
-    },
-    parent : parent,
-    spec: spec,
-    fields: fMap,
-    methods: make(map[string]*Function),
-  }
+		BaseType: BaseType{
+			name:        spec.Name.Name,
+			annotations: annotationMap,
+		},
+		parent:  parent,
+		spec:    spec,
+		fields:  fMap,
+		methods: make(map[string]*Function),
+	}
 
-  return s
+	return s
 }
 
 // FilteredStructFields is a map of struct fields
@@ -40,15 +41,15 @@ type FilteredStructFields map[string]*StructField
 
 // Filter will filter struct fields map and return
 // all those that have annotation with name given by parameter
-func(f FilteredStructFields) Filter(name string) map[string]*StructField {
-  newMap := make(map[string]*StructField)
-  for it := range f {
-    if f[it].Annotations().Has(name) {
-      newMap[it] = f[it]
-    }
-  }
+func (f FilteredStructFields) Filter(name string) map[string]*StructField {
+	newMap := make(map[string]*StructField)
+	for it := range f {
+		if f[it].Annotations().Has(name) {
+			newMap[it] = f[it]
+		}
+	}
 
-  return newMap
+	return newMap
 }
 
 // Fields returns fields that are associated with the
@@ -75,15 +76,16 @@ func (s *Structure) Methods() map[string]*Function {
 // ParseStruct will create a structure
 // with parameters given and return it
 func ParseStruct(spec *ast.TypeSpec, parent *ast.StructType, comments ast.CommentMap) *Structure {
-  fMap := make(map[string]*StructField)
-  for _, field := range parent.Fields.List {
-    if len(field.Names) == 0 {
-      continue
-    }
-    fMap[field.Names[0].Name] = ParseStructField(field, comments.Filter(field))
-  }
+	fMap := make(map[string]*StructField)
+	for _, field := range parent.Fields.List {
+		if len(field.Names) == 0 {
+			fMap[fmt.Sprintf("_%s", field.Type)] = ParseStructField(field, comments.Filter(field))
+			continue
+		}
+		fMap[field.Names[0].Name] = ParseStructField(field, comments.Filter(field))
+	}
 
-  s := NewStructure(parent, spec, fMap, ParseAnnotations(comments))
+	s := NewStructure(parent, spec, fMap, ParseAnnotations(comments))
 
 	return s
 }
