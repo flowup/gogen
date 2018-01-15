@@ -1,0 +1,10 @@
+package main
+
+type CalendarServiceClient interface {
+	GetVersion(ctx context.Context, in *google_protobuf.Empty, opts ...grpc.CallOption) (*Version, error)
+	CreateEvent(ctx context.Context, in *Event, opts ...grpc.CallOption) (*Event, error)
+	GetEvents(ctx context.Context, in *TimeFilterMessage, opts ...grpc.CallOption) (*Events, error)
+	GetEventByID(ctx context.Context, in *IDMessage, opts ...grpc.CallOption) (*Event, error)
+	UpdateEvent(ctx context.Context, in *Event, opts ...grpc.CallOption) (*Event, error)
+	DeleteEvent(ctx context.Context, in *IDMessage, opts ...grpc.CallOption) (*google_protobuf.Empty, error)
+}

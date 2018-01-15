@@ -1,0 +1,19 @@
+version: '2'
+services:
+  init:
+    image: flowup/godev
+    volumes:
+     - .:${PROJECT_PATH}:Z
+    working_dir: ${PROJECT_PATH}
+    command: bash -c "glide init --non-interactive"
+  dev:
+    build: .
+    image: flowup/godev
+    volumes:
+     - .:${PROJECT_PATH}:Z
+    working_dir: ${PROJECT_PATH}
+    command: bash -c "glide install && goconvey -timeout 5s -host 0.0.0.0"
+    ports:
+      - 3000:3000
+      - 3001:3001
+      - 8080:8080
