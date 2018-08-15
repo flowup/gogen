@@ -14,6 +14,7 @@ const (
 	SelectorType  = 4
 	Unrecognized  = 5
 	PointerType   = 6
+	InterfaceType = 7
 )
 
 // StructField encapsulates one field of the Structure
@@ -72,6 +73,8 @@ func (f *StructField) Type() (string, int) {
 			return fmt.Sprintf("%s.%s", expr.X, expr.Sel.Name), PointerType
 		}
 		return "", PointerType
+	case *ast.InterfaceType:
+		return "interface", InterfaceType
 	default:
 		panic("StructField type not recognized! Please report this issue.")
 	}
@@ -80,7 +83,7 @@ func (f *StructField) Type() (string, int) {
 // Tag returns tag of the field as a string
 func (f *StructField) Tag() (string) {
 	if f.parent.Tag != nil {
-		return string([]byte(f.parent.Tag.Value)[1:len(f.parent.Tag.Value)-1])
+		return string([]byte(f.parent.Tag.Value)[1 : len(f.parent.Tag.Value)-1])
 	}
 	return ""
 }

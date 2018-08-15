@@ -12,7 +12,7 @@ services:
     volumes:
      - .:${PROJECT_PATH}:Z
     working_dir: ${PROJECT_PATH}
-    command: bash -c "glide install && goconvey -timeout 5s -host 0.0.0.0"
+    command: bash -c "goconvey -timeout 5s -host 0.0.0.0"
     ports:
       - 3000:3000
       - 3001:3001

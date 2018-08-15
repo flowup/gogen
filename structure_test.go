@@ -17,13 +17,12 @@ type ParseTypeSuite struct {
 	complexBuild *Build
 	complexFile  *File
 
-	st *Structure
-	in *Interface
+	st  *Structure
+	in  *Interface
 	mdl *Structure
-	z *Structure
-	w *Structure
-	v *Structure
-
+	z   *Structure
+	w   *Structure
+	v   *Structure
 }
 
 func (s *ParseTypeSuite) SetupTest() {
@@ -77,7 +76,7 @@ func (s *ParseTypeSuite) TestParseZ() {
 }
 
 func (s *ParseTypeSuite) TestStructureFields() {
-	assert.Equal(s.T(), 3, len(s.st.Fields()))
+	assert.Equal(s.T(), 4, len(s.st.Fields()))
 
 	intType, intSubType := s.st.Fields()["Val"].Type()
 	assert.Equal(s.T(), "int", intType)
@@ -88,17 +87,26 @@ func (s *ParseTypeSuite) TestStructureFields() {
 	assert.Equal(s.T(), SliceType, sliceSubtype)
 
 	sliceTag := s.st.Fields()["SliceVal"].Tag()
-	assert.Equal(s.T(), `gorm:"index"`,sliceTag )
+	assert.Equal(s.T(), `gorm:"index"`, sliceTag)
 
 	valTag := s.st.Fields()["Val"].Tag()
-	assert.Equal(s.T(), ``,valTag )
+	assert.Equal(s.T(), ``, valTag)
 
-	mapType, mapSubtype:= s.st.Fields()["MapVal"].Type()
+	mapType, mapSubtype := s.st.Fields()["MapVal"].Type()
 	assert.Equal(s.T(), "[string]int", mapType)
 	assert.Equal(s.T(), MapType, mapSubtype)
 
 	mapTag := s.st.Fields()["MapVal"].Tag()
-	assert.Equal(s.T(), `json:"map_val"`,mapTag)
+	assert.Equal(s.T(), `json:"map_val"`, mapTag)
+
+	interType, interSubtype := s.st.Fields()["Inter"].Type()
+	interName := s.st.Fields()["Inter"].Name()
+	assert.Equal(s.T(), "Inter", interName)
+	assert.Equal(s.T(), "interface", interType)
+	assert.Equal(s.T(), InterfaceType, interSubtype)
+
+	interTag := s.st.Fields()["Inter"].Tag()
+	assert.Equal(s.T(), ``, interTag)
 
 	deleteType, timeSubType := s.mdl.Fields()["DeletedAt"].Type()
 	assert.Equal(s.T(), "time.Time", deleteType)
@@ -108,16 +116,16 @@ func (s *ParseTypeSuite) TestStructureFields() {
 	assert.Equal(s.T(), "int", ptrType)
 	assert.Equal(s.T(), PointerType, ptrSubType)
 
-	modelType, _/*modelSubType */:= s.z.Fields()["_Model"].Type()
+	modelType, _ /*modelSubType */ := s.z.Fields()["_Model"].Type()
 	assert.Equal(s.T(), "Model", modelType)
 
-	wType, _/*wSubType */:= s.w.Fields()["_Z"].Type()
+	wType, _ /*wSubType */ := s.w.Fields()["_Z"].Type()
 	assert.Equal(s.T(), "Z", wType)
 
-	vWType, _/*vWSubType */:= s.v.Fields()["_W"].Type()
+	vWType, _ /*vWSubType */ := s.v.Fields()["_W"].Type()
 	assert.Equal(s.T(), "W", vWType)
 
-	vZType, _/*vZSubType */:= s.v.Fields()["_Z"].Type()
+	vZType, _ /*vZSubType */ := s.v.Fields()["_Z"].Type()
 	assert.Equal(s.T(), "Z", vZType)
 
 }

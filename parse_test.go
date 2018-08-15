@@ -6,7 +6,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
-	"fmt"
 )
 
 const (
@@ -49,7 +48,7 @@ func (s *ParseSuite) TestParseDir() {
 	}
 }
 
-func (s *ParseSuite) TestParseInterface() {
+/*func (s *ParseSuite) TestParseInterface() {
 	fileName := filepath.Base(InterfaceFilePath)
 
 	build, err := ParseFile(InterfaceFilePath)
@@ -67,13 +66,13 @@ func (s *ParseSuite) TestParseInterface() {
 		}
 	}
 
-	/*assert.Equal(s.T(), nil, err)
-	assert.NotEqual(s.T(), (*Build)(nil), build)
-	// there should be only one file, as only one was
-	// parsed by the build
-	assert.Equal(s.T(), 1, len(build.Files()))
-	assert.NotEqual(s.T(), nil, build.File(fileName))*/
-}
+	//assert.Equal(s.T(), nil, err)
+	//assert.NotEqual(s.T(), (*Build)(nil), build)
+	//// there should be only one file, as only one was
+	//// parsed by the build
+	//assert.Equal(s.T(), 1, len(build.Files()))
+	//assert.NotEqual(s.T(), nil, build.File(fileName))
+}*/
 
 func (s *ParseSuite) TestParseFileAST() {
 
